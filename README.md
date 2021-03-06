@@ -12,7 +12,9 @@ This [terraform](https://www.terraform.io/) script will install a none HA [K3s](
 1. **Network**: Private network with one subnet.
 1. **Hetzner Cloud**: DDOS-Protection, 3-Locations, DSGVO compliant.
 
-This setup should be sufficient to run a medium sized application with multiple services (Golang), message-queue (NATS) and a database (PostgreSQL). [Traefik](https://doc.traefik.io/traefik/) is already preinstalled. The total costs are ~**20€/mo**.
+The total costs are ~**20€/mo**.
+
+This setup should be sufficient to run a medium sized application with multiple services (Golang), message-queue (NATS) and a database (PostgreSQL). [Traefik](https://doc.traefik.io/traefik/) is already preinstalled by K3s.
 
 K3s is a lightweight certified kubernetes distribution. It's packaged as single binary and comes with good defaults for storage and networking. K3s utilizes the host storage. You can use the storage of your servers (~170GB) for your workloads. In case of you need a more advanced solution k3s and this setup is compatible with [longhorn](https://github.com/longhorn/longhorn) a distributed block storage.
 

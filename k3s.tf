@@ -26,6 +26,14 @@ resource "hcloud_server" "control_plane" {
   packages:
     - open-iscsi # required for longhorn storage provider
   # Initialize cluster after first boot
+  # Manifest at this location will automatically be deployed to K3s in a manner similar to kubectl apply
+  write_files:
+  - content: ${filebase64("./hello-kubernetes.deployment.yaml")}
+    path: /var/lib/rancher/k3s/server/manifests/hello-kubernetes.deployment.yaml
+    encoding: b64
+  - content: ${filebase64("./hello-kubernetes.service.yaml")}
+    path: /var/lib/rancher/k3s/server/manifests/hello-kubernetes.service.yaml
+    encoding: b64
   runcmd:
     - curl -sfL https://get.k3s.io | K3S_TOKEN=${var.k3s_key} INSTALL_K3S_EXEC="--cluster-init" sh -
   EOT

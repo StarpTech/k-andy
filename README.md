@@ -11,15 +11,16 @@ This [terraform](https://www.terraform.io/) script will install a none HA [K3s](
 1. **Worker**: Server (_CPX31_, 8GB RAM, 4VCPU, 160GB NVMe).
 1. **Network**: Private network with one subnet.
 
-This setup should be sufficient to run a medium sized application. The total costs are ~**20€/mo**.
+This setup should be sufficient to run a medium sized application with multiple services (Golang), message-queue (NATS) and a database (PostgreSQL). [Traefik](https://doc.traefik.io/traefik/) is already preinstalled. The total costs are ~**20€/mo**.
 
 K3s is a lightweight certified kubernetes distribution. It's packaged as single binary and comes with good defaults for storage and networking. K3s utilizes the host storage. You can use the storage of your servers (~170GB) for your workloads. In case of you need a more advanced solution k3s and this setup is compatible with [longhorn](https://github.com/longhorn/longhorn) a distributed block storage.
 
 ## Usage
 
+Run the folling command to create a cluster. The process takes usually ~1min.
+
 ```sh
 terraform init
-terraform plan
 terraform apply
 ```
 
@@ -34,18 +35,11 @@ ssh root@<controlplane_public_ip>
 cat /etc/rancher/k3s/k3s.yaml
 ```
 
-### Demo
+## Demo
 
-```sh
-# Run a simple echo server
-kubectl create deployment hello-node --image=k8s.gcr.io/echoserver:1.4
-# Expose your service thorugh a service of type load balancer
-kubectl expose deployment hello-node --type=LoadBalancer --port=8080
-# Test the server
-curl http://<agent_public_ip>:8080
-```
+A demo application is automatically deployed to test your setup. Visit to `http://<agent_public_ip>:8080`.
 
-### Destroy cluster
+## Destroy cluster
 
 If you no longer need the cluster don't forget to destroy it.
 

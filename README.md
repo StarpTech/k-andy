@@ -1,5 +1,5 @@
 <p align="center">
-    <img src="https://raw.githubusercontent.com/StarpTech/k-andy/main/logo.svg" width="128px" alt="k-andy logo"/>
+    <img src="logo.svg" width="128px" alt="k-andy logo"/>
 </p>
 <h3 align="center">K-andy</h3>
 <p align="center">Zero friction Kubernetes stack for startups, prototypes and playgrounds.</p>

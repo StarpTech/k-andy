@@ -1,4 +1,9 @@
-# k3s-stack
+<p align="center">
+    <img src="https://raw.githubusercontent.com/StarpTech/k-andy/main/logo.svg" width="128px" alt="k-andy logo"/>
+</p>
+<h3 align="center">K-andy</h3>
+<p align="center">Zero friction Kubernetes stack for startups, prototypes and playgrounds.</p>
+
 
 This [terraform](https://www.terraform.io/) script will install a none HA [K3s](https://rancher.com/docs/k3s/latest/en/) Cluster in a private network on Hetzner Cloud. By default the following resources are provisionised:
 
@@ -59,3 +64,4 @@ If you need a Kubernetes cluster for production with deep Hetzner cloud integrat
 ## Credits
 
 - [terraform-module-k3s](https://github.com/xunleii/terraform-module-k3s/issues/50) If you want to provision a dynamic cluster.
+- Icon created by [Freepik](https://www.freepik.com) from [www.flaticon.com](https://www.flaticon.com/de/)

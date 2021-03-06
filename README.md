@@ -10,7 +10,7 @@ This [terraform](https://www.terraform.io/) script will install a none HA [K3s](
 1. **Controlplane**: Server (_CPX11_, 2GB RAM, 2VCPU, 40GB NVMe, 20TB Traffic).
 1. **Worker**: Server (_CPX31_, 8GB RAM, 4VCPU, 160GB NVMe, 20TB Traffic).
 1. **Network**: Private network with one subnet.
-1. **Hetzner Cloud**: DDOS-Protection, 3-Locations, DSGVO conform.
+1. **Hetzner Cloud**: DDOS-Protection, 3-Locations, DSGVO compliant.
 
 This setup should be sufficient to run a medium sized application with multiple services (Golang), message-queue (NATS) and a database (PostgreSQL). [Traefik](https://doc.traefik.io/traefik/) is already preinstalled. The total costs are ~**20€/mo**.
 

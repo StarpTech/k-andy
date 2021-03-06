@@ -52,7 +52,7 @@ terraform destroy
 
 ## Limitations
 
-This setup is not intented to use for critical production workloads. Services of type `LoadBalancer` are implemented via [Klipper Service Load Balancer](https://github.com/k3s-io/klipper-lb). PVC's are implemented via [Local Path Provisioner](https://github.com/rancher/local-path-provisioner).
+This setup is not intented to use for critical production workloads. For more informations check [k3s-architecture](https://rancher.com/docs/k3s/latest/en/architecture/). We don't use hetzners [cloud-controller](https://kubernetes.io/docs/concepts/architecture/cloud-controller/). Services of type `LoadBalancer` are implemented via [Klipper Service Load Balancer](https://github.com/k3s-io/klipper-lb). PVC's are implemented via [Local Path Provisioner](https://github.com/rancher/local-path-provisioner).
 
 ### HA Cluster
 
@@ -60,5 +60,5 @@ If you need a Kubernetes cluster for production with deep Hetzner cloud integrat
 
 ## Credits
 
-- [terraform-module-k3s](https://github.com/xunleii/terraform-module-k3s/issues/50) If you want to provision a dynamic cluster.
+- [terraform-module-k3s](https://github.com/xunleii/terraform-module-k3s/issues/50) If you want to provision a cluster dynamically.
 - Icon created by [Freepik](https://www.freepik.com) from [www.flaticon.com](https://www.flaticon.com/de/)

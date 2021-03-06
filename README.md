@@ -1,12 +1,10 @@
 # k3s-stack
 
-Zero friction Kubernetes stack for startups, prototypes and playgrounds.
-
 This [terraform](https://www.terraform.io/) script will install a none HA [K3s](https://rancher.com/docs/k3s/latest/en/) Cluster in a private network on Hetzner Cloud. By default the following resources are provisionised:
 
 1. Server (CPX11, 2GB, 12VCPU, 40GB) for the controlplane.
 1. Server (CPX31, 8GB, 4VCPU, 160GB) for the workload.
-1. Private network with one subnet
+1. Private network.
 
 **Total costs:** ~ 20€/mo
 
@@ -22,7 +20,7 @@ terraform apply
 
 `terraform apply` will display the public IP's of your servers. Use the controlplane IP to connect via SSH.
 
-## Cluster access
+### Cluster access
 
 Login into the controlplan server via ssh and copy the kubeconfig. You can use a tool like [Lens](https://k8slens.dev/) to work with Kubernetes in a more user friendly way. It also support cluster import by pasting the content of `/etc/rancher/k3s/k3s.yaml`. Don't forget to replace `127.0.0.1` with the public IP of the `controlplane` server.
 
@@ -31,7 +29,7 @@ ssh root@<controlplane_public_ip>
 cat /etc/rancher/k3s/k3s.yaml
 ```
 
-## Demo
+### Demo
 
 ```sh
 # Run a simple echo server
@@ -42,7 +40,7 @@ kubectl expose deployment hello-node --type=LoadBalancer --port=8080
 curl http://<agent_public_ip>:8080
 ```
 
-## Destroy cluster
+### Destroy cluster
 
 If you no longer need the cluster don't forget to destroy it.
 
@@ -53,6 +51,10 @@ terraform destroy
 ## Limitations
 
 This setup is not intented to use for critical production workloads. Services of type `LoadBalancer` are implemented via [Klipper Service Load Balancer](https://github.com/k3s-io/klipper-lb). PVC's are implemented via [Local Path Provisioner](https://github.com/rancher/local-path-provisioner).
+
+### HA Cluster
+
+If you need a Kubernetes cluster for production with deep cloud provider integration I can recommend my [article](https://dustindeus.medium.com/managed-kubernetes-cluster-ha-for-side-projects-47f74e2f9436) on medium.
 
 ## Credits
 

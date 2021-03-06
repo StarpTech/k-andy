@@ -60,5 +60,5 @@ If you need a Kubernetes cluster for production with deep Hetzner cloud integrat
 
 ## Credits
 
-- [terraform-module-k3s](https://github.com/xunleii/terraform-module-k3s/issues/50) If you want to provision a cluster dynamically.
+- [terraform-module-k3s](https://github.com/xunleii/terraform-module-k3s) If you want to provision a cluster dynamically.
 - Icon created by [Freepik](https://www.freepik.com) from [www.flaticon.com](https://www.flaticon.com/de/)

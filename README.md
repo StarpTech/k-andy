@@ -54,7 +54,7 @@ This setup is not intented to use for critical production workloads. Services of
 
 ### HA Cluster
 
-If you need a Kubernetes cluster for production with deep cloud provider integration I can recommend my [article](https://dustindeus.medium.com/managed-kubernetes-cluster-ha-for-side-projects-47f74e2f9436) on medium.
+If you need a Kubernetes cluster for production with deep Hetzner cloud integration I can recommend my [article](https://dustindeus.medium.com/managed-kubernetes-cluster-ha-for-side-projects-47f74e2f9436) on medium.
 
 ## Credits
 

@@ -20,7 +20,7 @@ K3s is a lightweight certified kubernetes distribution. It's packaged as single 
 
 ## Usage
 
-Run the folling command to create a cluster. The process takes usually ~1min.
+Run the following command to create a cluster. The process usually takes ~1min.
 
 ```sh
 terraform init

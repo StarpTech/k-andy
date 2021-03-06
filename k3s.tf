@@ -1,7 +1,7 @@
 locals {
   server_location           = "nbg1"
   control_plane_server_type = "cpx11"
-  agent_server_type         = "cx31"
+  agent_server_type         = "cpx31"
 }
 
 resource "hcloud_server" "control_plane" {

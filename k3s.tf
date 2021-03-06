@@ -20,12 +20,12 @@ resource "hcloud_server" "control_plane" {
 
   user_data = <<-EOT
   #cloud-config
-  # fetch packages
+  # Update packages after first boot
   package_update: true
   # Install additional packages
   packages:
-    - open-iscsi
-  # Only run after first boot
+    - open-iscsi # required for longhorn storage provider
+  # Initialize cluster after first boot
   runcmd:
     - curl -sfL https://get.k3s.io | K3S_TOKEN=${var.k3s_key} INSTALL_K3S_EXEC="--cluster-init" sh -
   EOT
@@ -56,12 +56,12 @@ resource "hcloud_server" "agent" {
 
   user_data = <<-EOT
   #cloud-config
-  # fetch packages
+  # Update packages after first boot
   package_update: true
   # Install additional packages
   packages:
-    - open-iscsi
-  # Only run after first boot
+    - open-iscsi # required for longhorn storage provider
+  # Add worker after first boot
   runcmd:
     - curl -sfL https://get.k3s.io | K3S_URL="https://${hcloud_server_network.control_plane.ip}:6443" K3S_TOKEN=${var.k3s_key} sh -
   EOT

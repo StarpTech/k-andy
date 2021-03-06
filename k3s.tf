@@ -1,7 +1,7 @@
 locals {
-  server_location = "nbg1"
+  server_location           = "nbg1"
   control_plane_server_type = "cpx11"
-  agent_server_type = "cx31"
+  agent_server_type         = "cx31"
 }
 
 resource "hcloud_server" "control_plane" {
@@ -51,6 +51,7 @@ resource "hcloud_server" "agent" {
     node_type   = "worker"
   }
 
+  # Control plane server must be created before the worker node can be attached
   depends_on = [hcloud_server.control_plane]
 
   user_data = <<-EOT

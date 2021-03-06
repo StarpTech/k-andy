@@ -7,8 +7,8 @@
 
 This [terraform](https://www.terraform.io/) script will install a none HA [K3s](https://rancher.com/docs/k3s/latest/en/) Cluster in a private network on Hetzner Cloud. By default the following resources are provisionised:
 
-1. Server (CPX11, 2GB, 12VCPU, 40GB) for the controlplane.
-1. Server (CPX31, 8GB, 4VCPU, 160GB) for the workload.
+1. Controlplane: Server (CPX11, 2GB, 12VCPU, 40GB).
+1. Worker: Server (CPX31, 8GB, 4VCPU, 160GB).
 1. Private network.
 
 **Total costs:** ~ 20€/mo

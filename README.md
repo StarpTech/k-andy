@@ -26,16 +26,17 @@ terraform apply
 ```
 
 ### Cluster access
+
 `terraform apply` will display the public IP's of your control-plane server. Login into the control-plane server via ssh and copy the kubeconfig. You can use a tool like [Lens](https://k8slens.dev/) to work with Kubernetes in a more user friendly way. It also support cluster import by pasting the content of `/etc/rancher/k3s/k3s.yaml`. Don't forget to replace `127.0.0.1` with the public IP of the `k3s-control-plane-0` server.
 
 ```sh
-ssh root@<public_ip>
+ssh root@<k3s-control-plane-0>
 cat /etc/rancher/k3s/k3s.yaml
 ```
 
 ## Demo
 
-A demo application is automatically deployed to test your setup. Visit `http://<agent_public_ip>:8080`.
+A demo application is automatically deployed to test your setup. Visit `http://<k3s-agent-0>:8080`.
 
 ## Destroy your cluster
 
@@ -55,10 +56,10 @@ terraform destroy
 
 ## Outputs
 
-| Name                   | Description                                                | Type   |
-| ---------------------- | ---------------------------------------------------------- | ------ |
-| controlplane_public_ip | The public IP address of the controlplane server instance. | string |
-| agent_public_ip        | The public IP address of the agent server instance.        | string |
+| Name                   | Description                                                      | Type   |
+| ---------------------- | ---------------------------------------------------------------- | ------ |
+| controlplane_public_ip | The public IP address of the first controlplane server instance. | string |
+| agent_public_ip        | The public IP address of the first agent server instance.        | string |
 
 ## Disallow scheduling on the control-plane node
 

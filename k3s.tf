@@ -2,7 +2,7 @@ locals {
   server_location           = "nbg1"
   control_plane_server_type = "cx11"
   agent_server_type         = "cx21"
-  first_control_plane_ip = cidrhost(hcloud_network_subnet.k3s_nodes.ip_range, 2)
+  first_control_plane_ip    = cidrhost(hcloud_network_subnet.k3s_nodes.ip_range, 2)
 }
 
 resource "hcloud_server" "first_control_plane" {
@@ -82,13 +82,8 @@ resource "hcloud_server" "control_plane" {
     network_id = hcloud_network.k3s.id
   }
 
-  # **Note**: the depends_on is important when directly attaching the
-  # server to a network. Otherwise Terraform will attempt to create
-  # server and sub-network in parallel. This may result in the server
-  # creation failing randomly.
   depends_on = [
-    hcloud_server.first_control_plane,
-    hcloud_network_subnet.k3s_nodes
+    hcloud_server.first_control_plane
   ]
 }
 
@@ -127,11 +122,6 @@ resource "hcloud_server" "agent" {
 
   depends_on = [
     # Control plane server must be created before the worker node can be attached
-    hcloud_server.first_control_plane,
-    # **Note**: the depends_on is important when directly attaching the
-    # server to a network. Otherwise Terraform will attempt to create
-    # server and sub-network in parallel. This may result in the server
-    # creation failing randomly.
-    hcloud_network_subnet.k3s_nodes
+    hcloud_server.first_control_plane
   ]
 }

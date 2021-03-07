@@ -64,13 +64,21 @@ terraform destroy
 | controlplane_public_ip | The public IP address of the controlplane server instance. | string |
 | agent_public_ip        | The public IP address of the agent server instance.        | string |
 
-## Limitations
+## Disallow scheduling on the controlplane node
+
+K3s doesn't configure taints for the controlplane node.
+
+```sh
+kubectl taint nodes k3s-control-plane-1 node-role.kubernetes.io/control-plane=true:NoSchedule
+kubectl taint nodes k3s-control-plane-1 node-role.kubernetes.io/master=true:NoSchedule
+```
+## Considerations
 
 This setup is not intented to use for critical production workloads. For more informations check [k3s-architecture](https://rancher.com/docs/k3s/latest/en/architecture/). We don't use hetzners [cloud-controller](https://kubernetes.io/docs/concepts/architecture/cloud-controller/). Services of type `LoadBalancer` are implemented via [Klipper Service Load Balancer](https://github.com/k3s-io/klipper-lb). PVC's are implemented via [Local Path Provisioner](https://github.com/rancher/local-path-provisioner).
 
 ### HA Cluster
 
-If you need a Kubernetes cluster for production with deep Hetzner cloud integration I can recommend my article [Managed Kubernetes Cluster (HA) for Side Projects](https://dustindeus.medium.com/managed-kubernetes-cluster-ha-for-side-projects-47f74e2f9436).
+If you need a Kubernetes cluster for production with deep Hetzner Cloud integration I can recommend my article [Managed Kubernetes Cluster (HA) for Side Projects](https://dustindeus.medium.com/managed-kubernetes-cluster-ha-for-side-projects-47f74e2f9436).
 
 ## Credits
 

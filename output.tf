@@ -4,6 +4,6 @@ output "controlplane_public_ip" {
 }
 
 output "agent_public_ip" {
-  value       = hcloud_server.agent[0].ipv4_address
+  value       = hcloud_server.agents[0].ipv4_address
   description = "The public IP address of the first agent server instance."
 }

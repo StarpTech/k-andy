@@ -51,7 +51,6 @@ terraform destroy
 | Name         | Description                             | Type   | Default            | Required |
 | ------------ | --------------------------------------- | ------ | ------------------ | -------- |
 | ssh_key      | Public key to use for all your server   | string |                    | true     |
-| k3s_key      | Shared secret to form a cluster         | string |                    | true     |
 | hcloud.token | API token of your hetzner cloud project | string | HCLOUD_TOKEN (ENV) | true     |
 
 ## Outputs

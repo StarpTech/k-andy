@@ -33,24 +33,17 @@ resource "hcloud_server" "first_control_plane" {
     path: /var/lib/rancher/k3s/server/manifests/hello-kubernetes.yaml
     encoding: b64
   runcmd:
-    - curl -sfL https://get.k3s.io | K3S_TOKEN=${var.k3s_key} INSTALL_K3S_EXEC="--cluster-init" sh -
+    - curl -sfL https://get.k3s.io | K3S_TOKEN=${random_password.k3s_cluster_secret.result} INSTALL_K3S_EXEC="--cluster-init" sh -
   EOT
-
-  network {
-    ip         = local.first_control_plane_ip
-    network_id = hcloud_network.k3s.id
-  }
-
-  # **Note**: the depends_on is important when directly attaching the
-  # server to a network. Otherwise Terraform will attempt to create
-  # server and sub-network in parallel. This may result in the server
-  # creation failing randomly.
-  depends_on = [
-    hcloud_network_subnet.k3s_nodes
-  ]
 }
 
-resource "hcloud_server" "control_plane" {
+resource "hcloud_server_network" "first_control_plane" {
+  subnet_id = hcloud_network_subnet.k3s_nodes.id
+  server_id = hcloud_server.first_control_plane.id
+  ip        = local.first_control_plane_ip
+}
+
+resource "hcloud_server" "control_planes" {
   count = var.servers_num - 1
   name  = "k3s-control-plane-${count.index + 1}"
 
@@ -74,7 +67,7 @@ resource "hcloud_server" "control_plane" {
     - open-iscsi # required for longhorn storage provider
   # Initialize cluster after first boot
   runcmd:
-    - curl -sfL https://get.k3s.io | K3S_TOKEN=${var.k3s_key} INSTALL_K3S_EXEC="--server https://${local.first_control_plane_ip}:6443" sh -
+    - curl -sfL https://get.k3s.io | K3S_TOKEN=${random_password.k3s_cluster_secret.result} INSTALL_K3S_EXEC="--server https://${local.first_control_plane_ip}:6443" sh -
   EOT
 
   network {
@@ -87,7 +80,14 @@ resource "hcloud_server" "control_plane" {
   ]
 }
 
-resource "hcloud_server" "agent" {
+resource "hcloud_server_network" "control_planes" {
+  count     = var.servers_num - 1
+  subnet_id = hcloud_network_subnet.k3s_nodes.id
+  server_id = hcloud_server.control_planes[count.index].id
+  ip        = cidrhost(hcloud_network_subnet.k3s_nodes.ip_range, 3 + count.index)
+}
+
+resource "hcloud_server" "agents" {
   count = var.agents_num
   name  = "k3s-agent-${count.index}"
 
@@ -111,17 +111,18 @@ resource "hcloud_server" "agent" {
     - open-iscsi # required for longhorn storage provider
   # Add worker after first boot
   runcmd:
-    - curl -sfL https://get.k3s.io | K3S_URL="https://${local.first_control_plane_ip}:6443" K3S_TOKEN=${var.k3s_key} sh -
+    - curl -sfL https://get.k3s.io | K3S_URL="https://${local.first_control_plane_ip}:6443" K3S_TOKEN=${random_password.k3s_cluster_secret.result} sh -
   EOT
-
-  network {
-    ip         = cidrhost(hcloud_network_subnet.k3s_nodes.ip_range, 2 + var.servers_num + count.index)
-    network_id = hcloud_network.k3s.id
-  }
-
 
   depends_on = [
     # Control plane server must be created before the worker node can be attached
     hcloud_server.first_control_plane
   ]
+}
+
+resource "hcloud_server_network" "agents_network" {
+  count     = length(hcloud_server.agents)
+  server_id = hcloud_server.agents[count.index].id
+  subnet_id = hcloud_network_subnet.k3s_nodes.id
+  ip        = cidrhost(hcloud_network_subnet.k3s_nodes.ip_range, 2 + var.servers_num + count.index)
 }

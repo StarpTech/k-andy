@@ -4,7 +4,7 @@
 <h3 align="center">K-andy</h3>
 <p align="center">Zero friction Kubernetes stack for startups, prototypes and playgrounds.</p>
 
-This [terraform](https://www.terraform.io/) script will install a High Availability [K3s](https://rancher.com/docs/k3s/latest/en/) Cluster in a private network on Hetzner Cloud. By default the following resources are provisionised:
+This [terraform](https://www.terraform.io/) script will install a High Availability [K3s](https://rancher.com/docs/k3s/latest/en/) Cluster with Embedded DB in a private network on Hetzner Cloud. By default the following resources are provisionised:
 
 1. **3x Control-plane**: Server (_CX11_, 2GB RAM, 1VCPU, 20GB NVMe, 20TB Traffic).
 1. **3x Worker**: Server (_CPX31_, 4GB RAM, 2VCPU, 40GB NVMe, 20TB Traffic).

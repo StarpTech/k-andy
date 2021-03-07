@@ -9,7 +9,6 @@ This [terraform](https://www.terraform.io/) script will install a High Availabil
 1. **3x Control-plane**: Server (_CX11_, 2GB RAM, 1VCPU, 20GB NVMe, 20TB Traffic).
 1. **3x Worker**: Server (_CPX31_, 4GB RAM, 2VCPU, 40GB NVMe, 20TB Traffic).
 1. **Network**: Private network with one subnet.
-1. **Hetzner Cloud**: DDOS-Protection, 3-Locations, DSGVO compliant.
 
 The total costs are ~**27€/mo**.
 

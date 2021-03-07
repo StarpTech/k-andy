@@ -66,7 +66,7 @@ terraform destroy
 K3s doesn't configure taints for the control-plane node. If you want to ensure that workloads are only scheduled on worker nodes add the following taints to the control-plane nodes.
 
 ```sh
-kubectl taint nodes -l kubectl taint nodes -l node-role.kubernetes.io/controlplane=true node-role.kubernetes.io/control-plane=true:NoSchedule
+kubectl taint nodes -l node-role.kubernetes.io/controlplane=true node-role.kubernetes.io/control-plane=true:NoSchedule
 ```
 
 ## Considerations

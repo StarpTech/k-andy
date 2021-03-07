@@ -7,14 +7,14 @@
 This [terraform](https://www.terraform.io/) script will install a High Availability [K3s](https://rancher.com/docs/k3s/latest/en/) Cluster with Embedded DB in a private network on Hetzner Cloud. By default the following resources are provisionised:
 
 1. **3x Control-plane**: Server (_CX11_, 2GB RAM, 1VCPU, 20GB NVMe, 20TB Traffic).
-1. **3x Worker**: Server (_CPX31_, 4GB RAM, 2VCPU, 40GB NVMe, 20TB Traffic).
+1. **3x Worker**: Server (_CX21_, 4GB RAM, 2VCPU, 40GB NVMe, 20TB Traffic).
 1. **Network**: Private network with one subnet.
 
 The total costs are ~**27€/mo**.
 
 This setup should be sufficient to run a medium sized application with multiple services, message-queue and a database. [Traefik](https://doc.traefik.io/traefik/) is already preinstalled by K3s.
 
-K3s is a lightweight certified kubernetes distribution. It's packaged as single binary and comes with good defaults for storage and networking. K3s utilizes the host storage. You can use the storage of your servers (~170GB) for your workloads. In case of you need a more advanced solution k3s and this setup is compatible with [longhorn](https://github.com/longhorn/longhorn) a distributed block storage.
+K3s is a lightweight certified kubernetes distribution. It's packaged as single binary and comes with good defaults for storage and networking. K3s utilizes the host storage. You can use the storage of your servers (~100GB) for your workloads. In case of you need a more advanced solution k3s and this setup is compatible with [longhorn](https://github.com/longhorn/longhorn) a distributed block storage.
 
 ## Usage
 

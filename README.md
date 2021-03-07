@@ -6,7 +6,7 @@
 
 This [terraform](https://www.terraform.io/) script will install a none HA [K3s](https://rancher.com/docs/k3s/latest/en/) Cluster in a private network on Hetzner Cloud. By default the following resources are provisionised:
 
-1. **Controlplane**: Server (_CPX11_, 2GB RAM, 2VCPU, 40GB NVMe, 20TB Traffic).
+1. **Control-plane**: Server (_CPX11_, 2GB RAM, 2VCPU, 40GB NVMe, 20TB Traffic).
 1. **Worker**: Server (_CPX31_, 8GB RAM, 4VCPU, 160GB NVMe, 20TB Traffic).
 1. **Network**: Private network with one subnet.
 1. **Hetzner Cloud**: DDOS-Protection, 3-Locations, DSGVO compliant.
@@ -27,7 +27,7 @@ terraform apply
 ```
 
 ### Cluster access
-`terraform apply` will display the public IP's of your new servers. Use the controlplane IP to connect via SSH. Login into the controlplan server via ssh and copy the kubeconfig. You can use a tool like [Lens](https://k8slens.dev/) to work with Kubernetes in a more user friendly way. It also support cluster import by pasting the content of `/etc/rancher/k3s/k3s.yaml`. Don't forget to replace `127.0.0.1` with the public IP of the `controlplane` server.
+`terraform apply` will display the public IP's of your new servers. Use the control-plane IP to connect via SSH. Login into the control-plane server via ssh and copy the kubeconfig. You can use a tool like [Lens](https://k8slens.dev/) to work with Kubernetes in a more user friendly way. It also support cluster import by pasting the content of `/etc/rancher/k3s/k3s.yaml`. Don't forget to replace `127.0.0.1` with the public IP of the `controlplane` server.
 
 ```sh
 ssh root@<controlplane_public_ip>

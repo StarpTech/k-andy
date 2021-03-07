@@ -26,11 +26,8 @@ terraform init
 terraform apply
 ```
 
-`terraform apply` will display the public IP's of your servers. Use the controlplane IP to connect via SSH.
-
 ### Cluster access
-
-Login into the controlplan server via ssh and copy the kubeconfig. You can use a tool like [Lens](https://k8slens.dev/) to work with Kubernetes in a more user friendly way. It also support cluster import by pasting the content of `/etc/rancher/k3s/k3s.yaml`. Don't forget to replace `127.0.0.1` with the public IP of the `controlplane` server.
+`terraform apply` will display the public IP's of your new servers. Use the controlplane IP to connect via SSH. Login into the controlplan server via ssh and copy the kubeconfig. You can use a tool like [Lens](https://k8slens.dev/) to work with Kubernetes in a more user friendly way. It also support cluster import by pasting the content of `/etc/rancher/k3s/k3s.yaml`. Don't forget to replace `127.0.0.1` with the public IP of the `controlplane` server.
 
 ```sh
 ssh root@<controlplane_public_ip>
@@ -64,14 +61,15 @@ terraform destroy
 | controlplane_public_ip | The public IP address of the controlplane server instance. | string |
 | agent_public_ip        | The public IP address of the agent server instance.        | string |
 
-## Disallow scheduling on the controlplane node
+## Disallow scheduling on the control-plane node
 
-K3s doesn't configure taints for the controlplane node.
+K3s doesn't configure taints for the control-plane node. If you want to ensure that workloads are only scheduled on worker nodes add the following taints to the control-plane node.
 
 ```sh
 kubectl taint nodes k3s-control-plane-1 node-role.kubernetes.io/control-plane=true:NoSchedule
 kubectl taint nodes k3s-control-plane-1 node-role.kubernetes.io/master=true:NoSchedule
 ```
+
 ## Considerations
 
 This setup is not intented to use for critical production workloads. For more informations check [k3s-architecture](https://rancher.com/docs/k3s/latest/en/architecture/). We don't use hetzners [cloud-controller](https://kubernetes.io/docs/concepts/architecture/cloud-controller/). Services of type `LoadBalancer` are implemented via [Klipper Service Load Balancer](https://github.com/k3s-io/klipper-lb). PVC's are implemented via [Local Path Provisioner](https://github.com/rancher/local-path-provisioner).

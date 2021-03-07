@@ -4,7 +4,6 @@
 <h3 align="center">K-andy</h3>
 <p align="center">Zero friction Kubernetes stack for startups, prototypes and playgrounds.</p>
 
-
 This [terraform](https://www.terraform.io/) script will install a none HA [K3s](https://rancher.com/docs/k3s/latest/en/) Cluster in a private network on Hetzner Cloud. By default the following resources are provisionised:
 
 1. **Controlplane**: Server (_CPX11_, 2GB RAM, 2VCPU, 40GB NVMe, 20TB Traffic).
@@ -40,15 +39,30 @@ cat /etc/rancher/k3s/k3s.yaml
 
 ## Demo
 
-A demo application is automatically deployed to test your setup. Visit to `http://<agent_public_ip>:8080`.
+A demo application is automatically deployed to test your setup. Visit `http://<agent_public_ip>:8080`.
 
-## Destroy cluster
+## Destroy your cluster
 
 If you no longer need the cluster don't forget to destroy it.
 
 ```sh
 terraform destroy
 ```
+
+## Inputs
+
+| Name         | Description                             | Type   | Default | Required |
+| ------------ | --------------------------------------- | ------ | ------- | -------- |
+| ssh_key      | Public key to use for all your server   | string |         | true     |
+| k3s_key      | Shared secret to form a cluster         | string |         | true     |
+| hcloud.token | API token of your hetzner cloud project | string |         | true     |
+
+## Outputs
+
+| Name                   | Description                                                | Type   |
+| ---------------------- | ---------------------------------------------------------- | ------ |
+| controlplane_public_ip | The public IP address of the controlplane server instance. | string |
+| agent_public_ip        | The public IP address of the agent server instance.        | string |
 
 ## Limitations
 

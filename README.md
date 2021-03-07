@@ -2,7 +2,7 @@
     <img src="logo.svg" width="128px" alt="k-andy logo"/>
 </p>
 <h3 align="center">K-andy</h3>
-<p align="center">Bootstrap a High Availability <a href="https://rancher.com/docs/k3s/latest/en/">K3s</a> Cluster with Embedded DB < 1 min 🚀</p>
+<p align="center">Zero friction Kubernetes stack for startups, prototypes, and playgrounds on Hetzner Cloud.</p>
 
 This [terraform](https://www.terraform.io/) script will install a High Availability [K3s](https://rancher.com/docs/k3s/latest/en/) Cluster with Embedded DB in a private network on [Hetzner Cloud](https://www.hetzner.com/de/cloud). By default the following resources are provisionised:
 
@@ -18,7 +18,7 @@ K3s is a lightweight certified kubernetes distribution. It's packaged as single 
 
 ## Usage
 
-Run the following command to create a cluster. The process usually takes ~1min.
+Run the following command to create a cluster. The process usually takes < 1 min 🚀.
 
 ```sh
 terraform init

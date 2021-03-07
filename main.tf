@@ -20,3 +20,13 @@ resource "hcloud_network_subnet" "k3s_nodes" {
 data "hcloud_image" "ubuntu" {
   name = "ubuntu-20.04"
 }
+
+variable "servers_num" {
+  description = "Number of control plane nodes."
+  default     = 3
+}
+
+variable "agents_num" {
+  description = "Number of agent nodes."
+  default     = 3
+}

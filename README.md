@@ -4,14 +4,14 @@
 <h3 align="center">K-andy</h3>
 <p align="center">Zero friction Kubernetes stack for startups, prototypes and playgrounds.</p>
 
-This [terraform](https://www.terraform.io/) script will install a none HA [K3s](https://rancher.com/docs/k3s/latest/en/) Cluster in a private network on Hetzner Cloud. By default the following resources are provisionised:
+This [terraform](https://www.terraform.io/) script will install a High Availability [K3s](https://rancher.com/docs/k3s/latest/en/) Cluster in a private network on Hetzner Cloud. By default the following resources are provisionised:
 
-1. **Control-plane**: Server (_CPX11_, 2GB RAM, 2VCPU, 40GB NVMe, 20TB Traffic).
-1. **Worker**: Server (_CPX31_, 8GB RAM, 4VCPU, 160GB NVMe, 20TB Traffic).
+1. **3x Control-plane**: Server (_CX11_, 2GB RAM, 1VCPU, 20GB NVMe, 20TB Traffic).
+1. **3x Worker**: Server (_CPX31_, 4GB RAM, 2VCPU, 40GB NVMe, 20TB Traffic).
 1. **Network**: Private network with one subnet.
 1. **Hetzner Cloud**: DDOS-Protection, 3-Locations, DSGVO compliant.
 
-The total costs are ~**20€/mo**.
+The total costs are ~**27€/mo**.
 
 This setup should be sufficient to run a medium sized application with multiple services, message-queue and a database. [Traefik](https://doc.traefik.io/traefik/) is already preinstalled by K3s.
 
@@ -27,10 +27,10 @@ terraform apply
 ```
 
 ### Cluster access
-`terraform apply` will display the public IP's of your new servers. Use the control-plane IP to connect via SSH. Login into the control-plane server via ssh and copy the kubeconfig. You can use a tool like [Lens](https://k8slens.dev/) to work with Kubernetes in a more user friendly way. It also support cluster import by pasting the content of `/etc/rancher/k3s/k3s.yaml`. Don't forget to replace `127.0.0.1` with the public IP of the `controlplane` server.
+`terraform apply` will display the public IP's of your control-plane server. Login into the control-plane server via ssh and copy the kubeconfig. You can use a tool like [Lens](https://k8slens.dev/) to work with Kubernetes in a more user friendly way. It also support cluster import by pasting the content of `/etc/rancher/k3s/k3s.yaml`. Don't forget to replace `127.0.0.1` with the public IP of the `k3s-control-plane-0` server.
 
 ```sh
-ssh root@<controlplane_public_ip>
+ssh root@<public_ip>
 cat /etc/rancher/k3s/k3s.yaml
 ```
 
@@ -63,22 +63,22 @@ terraform destroy
 
 ## Disallow scheduling on the control-plane node
 
-K3s doesn't configure taints for the control-plane node. If you want to ensure that workloads are only scheduled on worker nodes add the following taints to the control-plane node.
+K3s doesn't configure taints for the control-plane node. If you want to ensure that workloads are only scheduled on worker nodes add the following taints to the control-plane nodes.
 
 ```sh
-kubectl taint nodes k3s-control-plane-1 node-role.kubernetes.io/control-plane=true:NoSchedule
-kubectl taint nodes k3s-control-plane-1 node-role.kubernetes.io/master=true:NoSchedule
+kubectl taint nodes k3s-control-plane-0 node-role.kubernetes.io/control-plane=true:NoSchedule
+kubectl taint nodes k3s-control-plane-0 node-role.kubernetes.io/master=true:NoSchedule
 ```
 
 ## Considerations
 
-This setup is not intented to use for critical production workloads. For more informations check [k3s-architecture](https://rancher.com/docs/k3s/latest/en/architecture/). We don't use hetzners [cloud-controller](https://kubernetes.io/docs/concepts/architecture/cloud-controller/). Services of type `LoadBalancer` are implemented via [Klipper Service Load Balancer](https://github.com/k3s-io/klipper-lb). PVC's are implemented via [Local Path Provisioner](https://github.com/rancher/local-path-provisioner).
+We don't use hetzners [cloud-controller](https://kubernetes.io/docs/concepts/architecture/cloud-controller/). Services of type `LoadBalancer` are implemented via [Klipper Service Load Balancer](https://github.com/k3s-io/klipper-lb). PVC's are implemented via [Local Path Provisioner](https://github.com/rancher/local-path-provisioner).
 
 ### HA Cluster
 
-If you need a Kubernetes cluster for production with deep Hetzner Cloud integration I can recommend my article [Managed Kubernetes Cluster (HA) for Side Projects](https://dustindeus.medium.com/managed-kubernetes-cluster-ha-for-side-projects-47f74e2f9436).
+If you need a Kubernetes cluster with deep Hetzner Cloud integration I can recommend my article [Managed Kubernetes Cluster (HA) for Side Projects](https://dustindeus.medium.com/managed-kubernetes-cluster-ha-for-side-projects-47f74e2f9436).
 
 ## Credits
 
-- [terraform-module-k3s](https://github.com/xunleii/terraform-module-k3s) If you want to provision a cluster dynamically.
+- [terraform-module-k3s](https://github.com/xunleii/terraform-module-k3s) If you want to provision a cluster dynamically with advanced configuration.
 - Icon created by [Freepik](https://www.freepik.com) from [www.flaticon.com](https://www.flaticon.com/de/)

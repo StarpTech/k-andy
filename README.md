@@ -4,7 +4,7 @@
 <h3 align="center">K-andy</h3>
 <p align="center">Bootstrap a High Availability <a href="https://rancher.com/docs/k3s/latest/en/">K3s</a> Cluster with Embedded DB < 1 min 🚀</p>
 
-This [terraform](https://www.terraform.io/) script will install a High Availability [K3s](https://rancher.com/docs/k3s/latest/en/) Cluster with Embedded DB in a private network on Hetzner Cloud. By default the following resources are provisionised:
+This [terraform](https://www.terraform.io/) script will install a High Availability [K3s](https://rancher.com/docs/k3s/latest/en/) Cluster with Embedded DB in a private network on [Hetzner Cloud](https://www.hetzner.com/de/cloud). By default the following resources are provisionised:
 
 1. **3x Control-plane**: Server (_CX11_, 2GB RAM, 1VCPU, 20GB NVMe, 20TB Traffic).
 1. **3x Worker**: Server (_CPX21_, 4GB RAM, 3VCPU, 80GB NVMe, 20TB Traffic).

@@ -1,16 +1,20 @@
-<p align="center">
-    <img src="logo.svg" width="128px" alt="k-andy logo"/>
-</p>
-<h3 align="center">K-andy</h3>
-<p align="center">Zero friction Kubernetes stack for startups, prototypes, and playgrounds on Hetzner Cloud.</p>
+# k-andy
 
-This [terraform](https://www.terraform.io/) script will install a High Availability [K3s](https://rancher.com/docs/k3s/latest/en/) Cluster with Embedded DB in a private network on [Hetzner Cloud](https://www.hetzner.com/de/cloud). By default the following resources are provisionised:
+<img align="left" height="300" src="logo.svg"/>
 
-1. **3x Control-plane**: Server (_CX11_, 2GB RAM, 1VCPU, 20GB NVMe, 20TB Traffic).
-1. **3x Worker**: Server (_CPX21_, 4GB RAM, 3VCPU, 80GB NVMe, 20TB Traffic).
-1. **Network**: Private network with one subnet.
+### Zero friction Kubernetes stack on Hetzner Cloud
+
+This [terraform](https://www.terraform.io/) script will install a High Availability [K3s](https://rancher.com/docs/k3s/latest/en/) Cluster with Embedded DB in a private network on [Hetzner Cloud](https://www.hetzner.com/de/cloud). By default the following resources are provisionised (customizable):
+
+- **3x Control-plane**: Server (_CX11_, 2GB RAM, 1VCPU, 20GB NVMe, 20TB Traffic).
+- **3x Worker**: Server (_CPX21_, 4GB RAM, 3VCPU, 80GB NVMe, 20TB Traffic).
+- **Network**: Private network with one subnet.
 
 Total costs: **~33€/mo**.
+
+</br>
+</br>
+</br>
 
 This setup should be sufficient to run a medium sized application with multiple services, message-queue and a database. [Traefik](https://doc.traefik.io/traefik/) is already preinstalled by K3s.
 
@@ -72,7 +76,7 @@ kubectl taint nodes -l node-role.kubernetes.io/controlplane=true node-role.kuber
 
 We don't use hetzners [cloud-controller](https://kubernetes.io/docs/concepts/architecture/cloud-controller/). Services of type `LoadBalancer` are implemented via [Klipper Service Load Balancer](https://github.com/k3s-io/klipper-lb). PVC's are implemented via [Local Path Provisioner](https://github.com/rancher/local-path-provisioner).
 
-### Hetzner Cloud integration
+## Hetzner Cloud integration
 
 If you need a Kubernetes cluster with deep Hetzner Cloud integration I can recommend my article [Managed Kubernetes Cluster (HA) for Side Projects](https://dustindeus.medium.com/managed-kubernetes-cluster-ha-for-side-projects-47f74e2f9436).
 

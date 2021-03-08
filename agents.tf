@@ -29,6 +29,19 @@ resource "hcloud_server" "agents" {
     # Control plane server must be created before the worker node can be attached
     hcloud_server.first_control_plane
   ]
+
+  provisioner "remote-exec" {
+    inline = [
+      "until systemctl is-active --quiet k3s-agent.service; do sleep 1; done"
+    ]
+
+    connection {
+      host        = self.ipv4_address
+      type        = "ssh"
+      user        = "root"
+      private_key = file(var.private_key)
+    }
+  }
 }
 
 resource "hcloud_server_network" "agents_network" {

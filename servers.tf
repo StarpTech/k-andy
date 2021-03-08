@@ -28,6 +28,29 @@ resource "hcloud_server" "first_control_plane" {
   runcmd:
     - curl -sfL https://get.k3s.io | K3S_TOKEN=${random_password.k3s_cluster_secret.result} INSTALL_K3S_EXEC="--cluster-init" sh -
   EOT
+
+  provisioner "remote-exec" {
+    inline = [
+      "until systemctl is-active --quiet k3s.service; do sleep 1; done",
+      "until kubectl get node ${self.name}; do sleep 1; done",
+      "kubectl taint nodes ${self.name} node-role.kubernetes.io/control-plane=true:NoSchedule"
+    ]
+
+    connection {
+      host        = self.ipv4_address
+      type        = "ssh"
+      user        = "root"
+      private_key = file(var.private_key)
+    }
+  }
+
+  provisioner "local-exec" {
+    command = "scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ${var.public_key} root@${self.ipv4_address}:/etc/rancher/k3s/k3s.yaml ./kubeconfig.yaml"
+  }
+
+  provisioner "local-exec" {
+    command = "sed -i -e 's/127.0.0.1/${self.ipv4_address}/g' ./kubeconfig.yaml"
+  }
 }
 
 resource "hcloud_server_network" "first_control_plane" {
@@ -66,6 +89,21 @@ resource "hcloud_server" "control_planes" {
   network {
     ip         = cidrhost(hcloud_network_subnet.k3s_nodes.ip_range, 3 + count.index)
     network_id = hcloud_network.k3s.id
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "until systemctl is-active --quiet k3s.service; do sleep 1; done",
+      "until kubectl get node ${self.name}; do sleep 1; done",
+      "kubectl taint nodes ${self.name} node-role.kubernetes.io/control-plane=true:NoSchedule"
+    ]
+
+    connection {
+      host        = self.ipv4_address
+      type        = "ssh"
+      user        = "root"
+      private_key = file(var.private_key)
+    }
   }
 
   depends_on = [

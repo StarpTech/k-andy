@@ -7,11 +7,11 @@
 This [terraform](https://www.terraform.io/) script will install a High Availability [K3s](https://rancher.com/docs/k3s/latest/en/) Cluster with Embedded DB in a private network on [Hetzner Cloud](https://www.hetzner.com/de/cloud). Tthe following resources are provisionised by default (customizable):
 
 - **3x Control-plane**: Server (_CX11_, 2GB RAM, 1VCPU, 20GB NVMe, 20TB Traffic).
-- **3x Worker**: Server (_CPX11_, 2GB RAM, 2VCPU, 40GB NVMe, 20TB Traffic).
+- **2x Worker**: Server (_CX21_, 4GB RAM, 2VCPU, 40GB NVMe, 20TB Traffic).
 - **Public Key**: SSH Key to access all servers.
 - **Network**: Private network with one subnet.
 
-Total costs: **~25€/mo**.
+Total costs: **~20€/mo**.
 
 </br>
 </br>
@@ -22,16 +22,17 @@ K3s is a lightweight certified kubernetes distribution. It's packaged as single 
 
 ## Usage
 
-Run the following command to create a cluster. The process usually takes < 1 min 🚀.
+Run the following command to create a cluster.
 
 ```sh
+HCLOUD_TOKEN=XXX
 terraform init
-terraform apply
+terraform apply -var "private_key=${private_key_location}" -var "public_key=${public_key_location}"
 ```
 
 ### Cluster access
 
-`terraform apply` will display the public IP's of your control-plane server. Login into the control-plane server via ssh and copy the kubeconfig. You can use a tool like [Lens](https://k8slens.dev/) to work with Kubernetes in a more user friendly way. It also support cluster import by pasting the content of `/etc/rancher/k3s/k3s.yaml`. Don't forget to replace `127.0.0.1` with the public IP of the `k3s-control-plane-0` server.
+`terraform apply` will copy the kubeconfig from the server to your current working directory. The file `kubeconfig.yaml` is created. You can use a tool like [Lens](https://k8slens.dev/) to work with Kubernetes in a more user friendly way. It also support cluster import by pasting the content of `kubeconfig.yaml`.
 
 ```sh
 ssh root@<k3s-control-plane-0>
@@ -54,7 +55,8 @@ terraform destroy
 
 | Name         | Description                             | Type   | Default            | Required |
 | ------------ | --------------------------------------- | ------ | ------------------ | -------- |
-| ssh_key      | Public key to use for all your server   | string |                    | true     |
+| private_key  | Private ssh key                         | string |                    | true     |
+| public_key   | Public ssh key                          | string |                    | true     |
 | hcloud.token | API token of your hetzner cloud project | string | HCLOUD_TOKEN (ENV) | true     |
 
 ## Outputs
@@ -63,14 +65,6 @@ terraform destroy
 | ---------------------- | ---------------------------------------------------------------- | ------ |
 | controlplane_public_ip | The public IP address of the first controlplane server instance. | string |
 | agent_public_ip        | The public IP address of the first agent server instance.        | string |
-
-## Disallow scheduling on the control-plane node
-
-K3s doesn't configure taints for the control-plane node. If you want to ensure that workloads are only scheduled on worker nodes add the following taints to the control-plane nodes.
-
-```sh
-kubectl taint nodes -l node-role.kubernetes.io/controlplane=true node-role.kubernetes.io/control-plane=true:NoSchedule
-```
 
 ## Considerations
 

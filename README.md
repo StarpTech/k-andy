@@ -6,8 +6,8 @@
 
 This [terraform](https://www.terraform.io/) script will install a High Availability [K3s](https://rancher.com/docs/k3s/latest/en/) Cluster with Embedded DB in a private network on [Hetzner Cloud](https://www.hetzner.com/de/cloud). Tthe following resources are provisionised by default (customizable):
 
-- **3x Control-plane**: Server (_CX11_, 2GB RAM, 1VCPU, 20GB NVMe, 20TB Traffic).
-- **2x Worker**: Server (_CX21_, 4GB RAM, 2VCPU, 40GB NVMe, 20TB Traffic).
+- **3x Control-plane**: _CX11_, 2GB RAM, 1VCPU, 20GB NVMe, 20TB Traffic.
+- **2x Worker**: _CX21_, 4GB RAM, 2VCPU, 40GB NVMe, 20TB Traffic.
 - **Public Key**: SSH Key to access all servers.
 - **Network**: Private network with one subnet.
 

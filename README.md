@@ -32,12 +32,7 @@ terraform apply -var "private_key=${private_key_location}" -var "public_key=${pu
 
 ### Cluster access
 
-`terraform apply` will copy the kubeconfig from the server to your current working directory. The file `kubeconfig.yaml` is created. You can use a tool like [Lens](https://k8slens.dev/) to work with Kubernetes in a more user friendly way. It also support cluster import by pasting the content of `kubeconfig.yaml`.
-
-```sh
-ssh root@<k3s-control-plane-0>
-cat /etc/rancher/k3s/k3s.yaml
-```
+`terraform apply` will copy the kubeconfig from the server to your current working directory. The file `kubeconfig.yaml` is created. You can use a tool like [Lens](https://k8slens.dev/) to work with Kubernetes in a more user friendly way. It also support cluster import by file.
 
 ## Demo
 

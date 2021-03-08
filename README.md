@@ -11,7 +11,7 @@ This [terraform](https://www.terraform.io/) script will install a High Availabil
 - **Public Key**: SSH Key to access all servers.
 - **Network**: Private network with one subnet.
 
-Total costs: **~20€/mo**.
+Total costs: **20€/mo**. The minimum configuration costs **6€/mo**.
 
 </br>
 </br>

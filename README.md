@@ -18,7 +18,7 @@ Total costs: **~20€/mo**.
 
 This setup should be sufficient to run a medium sized application with multiple services, message-queue and a database. [Traefik](https://doc.traefik.io/traefik/) is already preinstalled by K3s.
 
-K3s is a lightweight certified kubernetes distribution. It's packaged as single binary and comes with good defaults for storage and networking. K3s utilizes the host storage. You can use the storage of your servers (~60GB) for your workloads. In case of you need a more advanced solution k3s and this setup is compatible with [longhorn](https://github.com/longhorn/longhorn) a distributed block storage. In addition to this, hetzner has [cloud-controller-manager](https://github.com/hetznercloud/hcloud-cloud-controller-manager) and [CSI](https://github.com/hetznercloud/csi-driver) to integrate your Kubernets cluster with the Hetzner Cloud API (Load-Balancer, Volumes, Networking).
+K3s is a lightweight certified kubernetes distribution. It's packaged as single binary and comes with good defaults for storage and networking. K3s utilizes the host storage. You can use the storage of your servers (~60GB) for your workloads. In case of you need a more advanced solution k3s and this setup is compatible with [longhorn](https://github.com/longhorn/longhorn) a distributed block storage. In addition to this, hetzner provides a [cloud-controller-manager](https://github.com/hetznercloud/hcloud-cloud-controller-manager) and [CSI](https://github.com/hetznercloud/csi-driver) to integrate your Kubernets cluster with the Hetzner Cloud API (Load-Balancer, Volumes, Networking).
 
 ## Usage
 

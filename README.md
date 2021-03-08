@@ -30,7 +30,7 @@ terraform init
 terraform apply -var "private_key=${private_key_location}" -var "public_key=${public_key_location}"
 ```
 
-### Cluster access
+## Cluster access
 
 `terraform apply` will copy the kubeconfig from the server to your current working directory. The file `kubeconfig.yaml` is created. You can use a tool like [Lens](https://k8slens.dev/) to work with Kubernetes in a more user friendly way. It also support cluster import by file.
 

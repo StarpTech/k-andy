@@ -4,13 +4,14 @@
 
 ### Zero friction Kubernetes stack on Hetzner Cloud
 
-This [terraform](https://www.terraform.io/) script will install a High Availability [K3s](https://rancher.com/docs/k3s/latest/en/) Cluster with Embedded DB in a private network on [Hetzner Cloud](https://www.hetzner.com/de/cloud). By default the following resources are provisionised (customizable):
+This [terraform](https://www.terraform.io/) script will install a High Availability [K3s](https://rancher.com/docs/k3s/latest/en/) Cluster with Embedded DB in a private network on [Hetzner Cloud](https://www.hetzner.com/de/cloud). Tthe following resources are provisionised by default (customizable):
 
 - **3x Control-plane**: Server (_CX11_, 2GB RAM, 1VCPU, 20GB NVMe, 20TB Traffic).
-- **3x Worker**: Server (_CPX21_, 4GB RAM, 3VCPU, 80GB NVMe, 20TB Traffic).
+- **3x Worker**: Server (_CPX11_, 2GB RAM, 2VCPU, 40GB NVMe, 20TB Traffic).
+- **Public Key**: SSH Key to access all servers.
 - **Network**: Private network with one subnet.
 
-Total costs: **~33€/mo**.
+Total costs: **~25€/mo**.
 
 </br>
 </br>
@@ -18,7 +19,7 @@ Total costs: **~33€/mo**.
 
 This setup should be sufficient to run a medium sized application with multiple services, message-queue and a database. [Traefik](https://doc.traefik.io/traefik/) is already preinstalled by K3s.
 
-K3s is a lightweight certified kubernetes distribution. It's packaged as single binary and comes with good defaults for storage and networking. K3s utilizes the host storage. You can use the storage of your servers (~200GB) for your workloads. In case of you need a more advanced solution k3s and this setup is compatible with [longhorn](https://github.com/longhorn/longhorn) a distributed block storage.
+K3s is a lightweight certified kubernetes distribution. It's packaged as single binary and comes with good defaults for storage and networking. K3s utilizes the host storage. You can use the storage of your servers (~100GB) for your workloads. In case of you need a more advanced solution k3s and this setup is compatible with [longhorn](https://github.com/longhorn/longhorn) a distributed block storage.
 
 ## Usage
 

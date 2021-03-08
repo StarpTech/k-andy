@@ -7,7 +7,7 @@ resource "random_password" "k3s_cluster_secret" {
 
 resource "hcloud_ssh_key" "default" {
   name       = "K3S terraform module - Provisionning SSH key"
-  public_key = var.ssh_key
+  public_key = var.public_key
 }
 
 resource "hcloud_network" "k3s" {

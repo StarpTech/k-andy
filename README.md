@@ -4,7 +4,7 @@
 
 ### Zero friction Kubernetes stack on Hetzner Cloud
 
-This [terraform](https://www.terraform.io/) script will install a High Availability [K3s](https://rancher.com/docs/k3s/latest/en/) Cluster with Embedded DB in a private network on [Hetzner Cloud](https://www.hetzner.com/de/cloud). The following resources are provisionised by default (**20€/mo**):
+This [terraform](https://www.terraform.io/) script will install a High Availability [K3s](https://k3s.io/) Cluster with Embedded DB in a private network on [Hetzner Cloud](https://www.hetzner.com/de/cloud). The following resources are provisionised by default (**20€/mo**):
 
 - 3x Control-plane: _CX11_, 2GB RAM, 1VCPU, 20GB NVMe, 20TB Traffic.
 - 2x Worker: _CX21_, 4GB RAM, 2VCPU, 40GB NVMe, 20TB Traffic.
@@ -18,7 +18,7 @@ This [terraform](https://www.terraform.io/) script will install a High Availabil
 - Preinstalled [CSI-driver](https://github.com/hetznercloud/csi-driver) for volume support.
 - (Planned) [Cloud Controller Manager for Hetzner Cloud](https://github.com/hetznercloud/hcloud-cloud-controller-manager) for Load Balancer support.
 
-K3s is a lightweight certified kubernetes distribution. It's packaged as single binary and comes with good defaults for storage and networking. We replaced the default storage class with hetzner [CSI-driver](https://github.com/hetznercloud/csi-driver) to work with volumes instead of host-storage. The Ingress controller (traefik) has been disabled because K3s provides an old version (traefik < 2). You can install v2 or a different controller.
+K3s is a lightweight certified kubernetes distribution. It's packaged as single binary and comes with solid defaults for storage and networking but we replaced [Local-path-provisioner](https://github.com/rancher/local-path-provisioner) with hetzner [CSI-driver](https://github.com/hetznercloud/csi-driver). The Ingress controller (traefik) has been disabled because K3s provides an old version (traefik < 2). You can install v2 or a different controller.
 
 ## Usage
 

@@ -1,4 +1,8 @@
-provider "hcloud" {}
+variable "hcloud_token" {}
+
+provider "hcloud" {
+  token = var.hcloud_token
+}
 
 resource "random_password" "k3s_cluster_secret" {
   length  = 48
@@ -34,4 +38,14 @@ variable "servers_num" {
 variable "agents_num" {
   description = "Number of agent nodes."
   default     = 2
+}
+
+variable "k3s_version" {
+  description = "K3s version"
+  default     = "v1.20.4+k3s1"
+}
+
+variable "hetzner_csi_version" {
+  description = "Hetzner CSI version"
+  default     = "master"
 }

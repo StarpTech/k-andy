@@ -19,8 +19,7 @@ resource "hcloud_server" "agents" {
   package_update: true
   # Install additional packages
   packages:
-    - open-iscsi # required for longhorn storage provider
-  # Add worker after first boot
+  # Add agent after first boot
   runcmd:
     - curl -sfL https://get.k3s.io | K3S_URL="https://${local.first_control_plane_ip}:6443" K3S_TOKEN=${random_password.k3s_cluster_secret.result} sh -
   EOT

@@ -15,8 +15,15 @@ spec:
       containers:
       - name: hello-kubernetes
         image: paulbouwer/hello-kubernetes:1.9
+        volumeMounts:
+        - mountPath: "/data"
+          name: my-csi-volume
         ports:
         - containerPort: 8080
+      volumes:
+        - name: my-csi-volume
+          persistentVolumeClaim:
+            claimName: csi-pvc
 ---
 apiVersion: v1
 kind: Service
@@ -29,3 +36,15 @@ spec:
     targetPort: 8080
   selector:
     app: hello-kubernetes
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: csi-pvc
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+  storageClassName: hcloud-volumes

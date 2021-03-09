@@ -18,22 +18,25 @@ resource "hcloud_server" "first_control_plane" {
   package_update: true
   # Install additional packages
   packages:
-    - open-iscsi # required for longhorn storage provider
   # Initialize cluster after first boot
   # Manifest at this location will automatically be deployed to K3s in a manner similar to kubectl apply
   write_files:
+  # Deploy example application
   - content: ${filebase64("./hello-kubernetes.yaml")}
     path: /var/lib/rancher/k3s/server/manifests/hello-kubernetes.yaml
     encoding: b64
   runcmd:
-    - curl -sfL https://get.k3s.io | K3S_TOKEN=${random_password.k3s_cluster_secret.result} INSTALL_K3S_EXEC="--cluster-init" sh -
+    - curl -sfL https://get.k3s.io | K3S_TOKEN="${random_password.k3s_cluster_secret.result}" INSTALL_K3S_VERSION="${var.k3s_version}" sh -s - server --cluster-init --disable traefik --disable local-storage
   EOT
 
   provisioner "remote-exec" {
     inline = [
       "until systemctl is-active --quiet k3s.service; do sleep 1; done",
       "until kubectl get node ${self.name}; do sleep 1; done",
-      "kubectl taint nodes ${self.name} node-role.kubernetes.io/control-plane=true:NoSchedule"
+      "kubectl -n kube-system create secret generic hcloud-csi --from-literal=token=${var.hcloud_token}",
+      "kubectl taint nodes ${self.name} node-role.kubernetes.io/control-plane=true:NoSchedule",
+      # Install hetzner CSI plugin
+      "kubectl apply -f https://raw.githubusercontent.com/hetznercloud/csi-driver/v1.5.1/deploy/kubernetes/hcloud-csi.yml",
     ]
 
     connection {
@@ -80,10 +83,9 @@ resource "hcloud_server" "control_planes" {
   package_update: true
   # Install additional packages
   packages:
-    - open-iscsi # required for longhorn storage provider
   # Initialize cluster after first boot
   runcmd:
-    - curl -sfL https://get.k3s.io | K3S_TOKEN=${random_password.k3s_cluster_secret.result} INSTALL_K3S_EXEC="--server https://${local.first_control_plane_ip}:6443" sh -
+    - curl -sfL https://get.k3s.io | K3S_TOKEN="${random_password.k3s_cluster_secret.result}" INSTALL_K3S_VERSION="${var.k3s_version}" sh -s - server --server https://${local.first_control_plane_ip}:6443 --disable traefik --disable local-storage
   EOT
 
   network {

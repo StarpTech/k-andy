@@ -1,6 +1,6 @@
 # k-andy
 
-<img align="left" height="200" src="logo.svg"/>
+<img align="left" height="250" src="logo.svg"/>
 
 ### Zero friction Kubernetes stack on Hetzner Cloud
 

@@ -13,11 +13,12 @@ This [terraform](https://www.terraform.io/) script will install a High Availabil
 
 Total costs: **20€/mo**. The minimum configuration costs **6€/mo**.
 
+</br>
+
 **Hetzner Cloud integration**:
 
 - Preinstalled [CSI-driver](https://github.com/hetznercloud/csi-driver) for volume support.
 
-</br>
 </br>
 
 K3s is a lightweight certified kubernetes distribution. It's packaged as single binary and comes with good defaults for storage and networking. We replaced the default storage class with hetzner [CSI-driver](https://github.com/hetznercloud/csi-driver) to work with volumes instead of host-storage. Traefik has been disabled because K3s ships an old version < 2.

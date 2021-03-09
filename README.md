@@ -4,14 +4,12 @@
 
 ### Zero friction Kubernetes stack on Hetzner Cloud
 
-This [terraform](https://www.terraform.io/) script will install a High Availability [K3s](https://rancher.com/docs/k3s/latest/en/) Cluster with Embedded DB in a private network on [Hetzner Cloud](https://www.hetzner.com/de/cloud). The following resources are provisionised by default (customizable):
+This [terraform](https://www.terraform.io/) script will install a High Availability [K3s](https://rancher.com/docs/k3s/latest/en/) Cluster with Embedded DB in a private network on [Hetzner Cloud](https://www.hetzner.com/de/cloud). The following resources are provisionised by default (**20€/mo**):
 
 - 3x Control-plane: _CX11_, 2GB RAM, 1VCPU, 20GB NVMe, 20TB Traffic.
 - 2x Worker: _CX21_, 4GB RAM, 2VCPU, 40GB NVMe, 20TB Traffic.
 - Public Key: SSH Key to access all servers.
 - Network: Private network with one subnet.
-
-Total costs: **20€/mo**. The minimum configuration costs **6€/mo**.
 
 </br>
 

@@ -16,6 +16,7 @@ This [terraform](https://www.terraform.io/) script will install a High Availabil
 **Hetzner Cloud integration**:
 
 - Preinstalled [CSI-driver](https://github.com/hetznercloud/csi-driver) for volume support.
+- (Planned) [Cloud Controller Manager for Hetzner Cloud](https://github.com/hetznercloud/hcloud-cloud-controller-manager) for Load Balancer support.
 
 K3s is a lightweight certified kubernetes distribution. It's packaged as single binary and comes with good defaults for storage and networking. We replaced the default storage class with hetzner [CSI-driver](https://github.com/hetznercloud/csi-driver) to work with volumes instead of host-storage. Traefik has been disabled because K3s ships an old version < 2.
 

@@ -16,7 +16,7 @@ This [terraform](https://www.terraform.io/) script will install a High Availabil
 **Hetzner Cloud integration**:
 
 - Preinstalled [CSI-driver](https://github.com/hetznercloud/csi-driver) for volume support.
-- (Planned) [Cloud Controller Manager for Hetzner Cloud](https://github.com/hetznercloud/hcloud-cloud-controller-manager) for Load Balancer support.
+- Preinstalled [Cloud Controller Manager for Hetzner Cloud](https://github.com/hetznercloud/hcloud-cloud-controller-manager) for Load Balancer support.
 
 K3s is a lightweight certified kubernetes distribution. It's packaged as single binary and comes with solid defaults for storage and networking but we replaced [Local-path-provisioner](https://github.com/rancher/local-path-provisioner) with hetzner [CSI-driver](https://github.com/hetznercloud/csi-driver). The Ingress controller (traefik) has been disabled because K3s provides an old version (traefik < 2). You can install v2 or a different controller.
 
@@ -34,11 +34,20 @@ terraform apply \
 
 ## Cluster access
 
-`terraform apply` will copy the kubeconfig from the server to your current working directory. The file `kubeconfig.yaml` is created. You can use a tool like [Lens](https://k8slens.dev/) to work with Kubernetes in a more user friendly way. It also support cluster import by file.
+`terraform apply` will copy the kubeconfig from the server to your current working directory. The file `kubeconfig.yaml` is created. Run:
+
+```sh
+KUBECONFIG=kubeconfig.yaml kubectl get node
+```
+Try to access `http://<k3s-agent-0>:8080`.
 
 ## Demo
 
-A demo application is automatically deployed to test your setup. Visit `http://<k3s-agent-0>:8080`.
+A demo application can be found in [manifests](manifests/hello-kubernetes.yaml). Run:
+
+```sh
+KUBECONFIG=kubeconfig.yaml kubectl apply -f manifests/hello-kubernetes.yaml
+```
 
 ## Destroy your cluster
 
@@ -67,10 +76,6 @@ terraform destroy
 
 - Services of type `LoadBalancer` are implemented via [Klipper Service Load Balancer](https://github.com/k3s-io/klipper-lb).
 - Storage is provionised via [Local Path Provisioner](https://github.com/rancher/local-path-provisioner).
-
-## Hetzner Cloud integration
-
-If you need a Kubernetes cluster with deep Hetzner Cloud integration I can recommend my article [Managed Kubernetes Cluster (HA) for Side Projects](https://dustindeus.medium.com/managed-kubernetes-cluster-ha-for-side-projects-47f74e2f9436). The same steps are valid for K3s. The kubelet arguments can be passed to the k3s installation script.
 
 ## Credits
 

@@ -1,7 +1,9 @@
-variable "hcloud_token" {}
+data "template_file" "ccm_manifest" {
+  template = file("${path.module}/manifests/hcloud-ccm-net.yaml")
+}
 
-provider "hcloud" {
-  token = var.hcloud_token
+data "template_file" "csi_manifest" {
+  template = file("${path.module}/manifests/hcloud-csi.yaml")
 }
 
 resource "random_password" "k3s_cluster_secret" {
@@ -28,24 +30,4 @@ resource "hcloud_network_subnet" "k3s_nodes" {
 
 data "hcloud_image" "ubuntu" {
   name = "ubuntu-20.04"
-}
-
-variable "servers_num" {
-  description = "Number of control plane nodes."
-  default     = 3
-}
-
-variable "agents_num" {
-  description = "Number of agent nodes."
-  default     = 2
-}
-
-variable "k3s_version" {
-  description = "K3s version"
-  default     = "v1.20.4+k3s1"
-}
-
-variable "hetzner_csi_version" {
-  description = "Hetzner CSI version"
-  default     = "master"
 }

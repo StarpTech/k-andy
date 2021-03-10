@@ -15,13 +15,8 @@ resource "hcloud_server" "agents" {
 
   user_data = <<-EOT
   #cloud-config
-  # Update packages after first boot
-  package_update: true
-  # Install additional packages
-  packages:
-  # Add agent after first boot
   runcmd:
-    - curl -sfL https://get.k3s.io | K3S_URL="https://${local.first_control_plane_ip}:6443" K3S_TOKEN=${random_password.k3s_cluster_secret.result} sh -
+    - curl -sfL https://get.k3s.io | K3S_URL="https://${local.first_control_plane_ip}:6443" K3S_TOKEN=${random_password.k3s_cluster_secret.result} sh -s - agent --kubelet-arg="cloud-provider=external"
   EOT
 
   depends_on = [

@@ -39,7 +39,6 @@ terraform apply \
 ```sh
 KUBECONFIG=kubeconfig.yaml kubectl get node
 ```
-Try to access `http://<k3s-agent-0>:8080`.
 
 ## Demo
 
@@ -48,10 +47,11 @@ A demo application can be found in [manifests](manifests/hello-kubernetes.yaml).
 ```sh
 KUBECONFIG=kubeconfig.yaml kubectl apply -f manifests/hello-kubernetes.yaml
 ```
+and try to access `http://<load-balancer-ip>:8080`.
 
 ## Destroy your cluster
 
-If you no longer need the cluster don't forget to destroy it.
+If you no longer need the cluster don't forget to destroy it. Load-Balancers and volumes must be deleted manually.
 
 ```sh
 terraform destroy

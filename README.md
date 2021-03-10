@@ -8,7 +8,7 @@ This [terraform](https://www.terraform.io/) script will install a High Availabil
 
 - 3x Control-plane: _CX11_, 2GB RAM, 1VCPU, 20GB NVMe, 20TB Traffic.
 - 2x Worker: _CX21_, 4GB RAM, 2VCPU, 40GB NVMe, 20TB Traffic.
-- Load-Balancer: _LB11_, 5 Services, 25 Targets
+- Load-Balancer: _LB11_, 5 Services, 25 Targets.
 - Network: Private network with one subnet.
 
 </br>

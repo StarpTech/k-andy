@@ -72,12 +72,8 @@ terraform destroy
 | controlplanes_public_ip | The public IP addresses of the controlplane server. | string |
 | agents_public_ip        | The public IP addresses of the agent server.        | string |
 
-## Considerations
-
-- Services of type `LoadBalancer` are implemented via [Klipper Service Load Balancer](https://github.com/k3s-io/klipper-lb).
-- Storage is provionised via [Local Path Provisioner](https://github.com/rancher/local-path-provisioner).
-
 ## Credits
 
-- [terraform-module-k3s](https://github.com/xunleii/terraform-module-k3s) If you want to provision a cluster dynamically with advanced configuration.
+- [terraform-hcloud-k3s](https://github.com/cicdteam/terraform-hcloud-k3s) Terraform module which creates a single node cluster.
+- [terraform-module-k3](https://github.com/xunleii/terraform-module-k3s) Terraform module which creates a k3s cluster, with multi-server and management features.
 - Icon created by [Freepik](https://www.freepik.com) from [www.flaticon.com](https://www.flaticon.com/de/)

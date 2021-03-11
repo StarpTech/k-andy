@@ -11,7 +11,7 @@ resource "hcloud_server" "first_control_plane" {
     engine      = "k3s",
     node_type   = "control-plane"
   }
-
+  # logs can be found in /var/log/cloud-init-output.log and /var/log/cloud-init.log
   user_data = <<-EOT
   #cloud-config
   runcmd:

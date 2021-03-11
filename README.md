@@ -11,8 +11,6 @@ This [terraform](https://www.terraform.io/) script will install a High Availabil
 - Load-Balancer: _LB11_, 5 Services, 25 Targets.
 - Network: Private network with one subnet.
 
-You can configure the settings in the script.
-
 </br>
 
 **Hetzner Cloud integration**:

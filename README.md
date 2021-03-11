@@ -12,6 +12,7 @@ This [terraform](https://www.terraform.io/) script will install a High Availabil
 - Network: Private network with one subnet.
 
 </br>
+</br>
 
 **Hetzner Cloud integration**:
 

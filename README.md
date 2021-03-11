@@ -11,6 +11,8 @@ This [terraform](https://www.terraform.io/) script will install a High Availabil
 - Load-Balancer: _LB11_, 5 Services, 25 Targets.
 - Network: Private network with one subnet.
 
+You can configure the settings in the script.
+
 </br>
 
 **Hetzner Cloud integration**:
@@ -18,7 +20,7 @@ This [terraform](https://www.terraform.io/) script will install a High Availabil
 - Preinstalled [CSI-driver](https://github.com/hetznercloud/csi-driver) for volume support.
 - Preinstalled [Cloud Controller Manager for Hetzner Cloud](https://github.com/hetznercloud/hcloud-cloud-controller-manager) for Load Balancer support.
 
-K3s is a lightweight certified kubernetes distribution. It's packaged as single binary and comes with solid defaults for storage and networking but we replaced [Local-path-provisioner](https://github.com/rancher/local-path-provisioner) with hetzner [CSI-driver](https://github.com/hetznercloud/csi-driver). The Ingress controller (traefik) has been disabled because K3s provides an old version (traefik < 2). You can install v2 or a different controller.
+K3s is a lightweight certified kubernetes distribution. It's packaged as single binary and comes with solid defaults for storage and networking but we replaced [Local-path-provisioner](https://github.com/rancher/local-path-provisioner) with hetzner [CSI-driver](https://github.com/hetznercloud/csi-driver) and [klipper load-balancer](https://github.com/k3s-io/klipper-lb) with hetzner [Cloud Controller Manager](https://github.com/hetznercloud/hcloud-cloud-controller-manager). The Ingress controller (traefik) has been disabled because K3s provides an old version of traefik < 2. We prefer to install traefik v2 or a different controller.
 
 ## Usage
 
@@ -34,7 +36,7 @@ terraform apply \
 
 ## Cluster access
 
-`terraform apply` will copy the kubeconfig from the server to your current working directory. The file `kubeconfig.yaml` is created. Run:
+`terraform apply` will copy the kubeconfig from the master server to your current working directory. The file `kubeconfig.yaml` is created. Run:
 
 ```sh
 KUBECONFIG=kubeconfig.yaml kubectl get node

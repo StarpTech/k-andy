@@ -22,6 +22,7 @@ resource "hcloud_server" "first_control_plane" {
     inline = [
       "until systemctl is-active --quiet k3s.service; do sleep 1; done",
       "until kubectl get node ${self.name}; do sleep 1; done",
+      # Disable workloads on master node
       "kubectl taint node ${self.name} node-role.kubernetes.io/master=true:NoSchedule",
       # Install hetzner CCM
       "kubectl -n kube-system create secret generic hcloud --from-literal=token=${var.hcloud_token} --from-literal=network=${hcloud_network.k3s.name}",

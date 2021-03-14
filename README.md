@@ -72,10 +72,10 @@ terraform destroy
 
 ## Outputs
 
-| Name                    | Description                                         | Type   |
-| ----------------------- | --------------------------------------------------- | ------ |
-| controlplanes_public_ip | The public IP addresses of the controlplane server. | string |
-| agents_public_ip        | The public IP addresses of the agent server.        | string |
+| Name                    | Description                                        | Type   |
+| ----------------------- | -------------------------------------------------- | ------ |
+| controlplanes_public_ip | The public IP addresses of the controlplane server | string |
+| agents_public_ip        | The public IP addresses of the agent server        | string |
 
 ## Credits
 

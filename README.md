@@ -106,7 +106,7 @@ KUBECONFIG=kubeconfig.yaml kubectl label --all node k3s-upgrade=true
 KUBECONFIG=kubeconfig.yaml kubectl apply -f ./upgrade/server-plan.yaml
 ```
 
-Warning: **Wait for completion** [before you start upgrading your agents](https://github.com/k3s-io/k3s/issues/2996#issuecomment-788352375).
+**Warning:** Wait for completion [before you start upgrading your agents](https://github.com/k3s-io/k3s/issues/2996#issuecomment-788352375).
 
 3. Run the plan for the **agents**.
 

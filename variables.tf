@@ -29,5 +29,5 @@ variable "agents_num" {
 
 variable "k3s_version" {
   description = "K3s version"
-  default     = "v1.20.4+k3s1"
+  default     = "v1.20.5+k3s1"
 }

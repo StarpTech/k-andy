@@ -18,6 +18,12 @@ This [terraform](https://www.terraform.io/) script will install a High Availabil
 - Preinstalled [CSI-driver](https://github.com/hetznercloud/csi-driver) for volume support.
 - Preinstalled [Cloud Controller Manager for Hetzner Cloud](https://github.com/hetznercloud/hcloud-cloud-controller-manager) for Load Balancer support.
 
+**Auto-K3s-Upgrades**
+
+We provide an example how to upgrade your K3s node and agents with the [system-upgrade-controller](https://github.com/rancher/system-upgrade-controller). Check out [/upgrade](./upgrade)
+
+**What is K3s?**
+
 K3s is a lightweight certified kubernetes distribution. It's packaged as single binary and comes with solid defaults for storage and networking but we replaced [local-path-provisioner](https://github.com/rancher/local-path-provisioner) with hetzner [CSI-driver](https://github.com/hetznercloud/csi-driver) and [klipper load-balancer](https://github.com/k3s-io/klipper-lb) with hetzner [Cloud Controller Manager](https://github.com/hetznercloud/hcloud-cloud-controller-manager). The Ingress controller (traefik) has been disabled because K3s provides an old version of traefik < 2. We prefer to install traefik v2 or a different controller.
 
 ## Usage
@@ -65,7 +71,7 @@ terraform destroy
 | private_key     | Private ssh key               | string |              | true     |
 | public_key      | Public ssh key                | string |              | true     |
 | hcloud_token    | API token                     | string |              | true     |
-| k3s_version     | K3s version                   | string | v1.20.4+k3s1 | false    |
+| k3s_version     | K3s version                   | string | v1.20.5+k3s1 | false    |
 | servers_num     | Number of control plane nodes | string | 3            | false    |
 | agents_num      | Number of agent nodes         | string | 2            | false    |
 | server_location | Server location               | string | nbg1         | false    |
@@ -76,6 +82,48 @@ terraform destroy
 | ----------------------- | -------------------------------------------------- | ------ |
 | controlplanes_public_ip | The public IP addresses of the controlplane server | string |
 | agents_public_ip        | The public IP addresses of the agent server        | string |
+
+## Auto-Upgrade
+
+### Prerequisite
+
+Install the system-upgrade-controller inn your cluster.
+```
+KUBECONFIG=kubeconfig.yaml kubectl apply -f ./upgrade/controller.yaml
+```
+
+## Upgrade procedure
+
+1. Mark the nodes you want to upgrade (The script will mark all nodes).
+
+```
+KUBECONFIG=kubeconfig.yaml kubectl label --all node k3s-upgrade=true
+```
+
+2. Run the plan for the **servers**.
+
+```
+KUBECONFIG=kubeconfig.yaml kubectl apply -f ./upgrade/server-plan.yaml
+```
+
+**Wait for completion**
+
+3. Run the plan for the **agents**.
+
+```
+KUBECONFIG=kubeconfig.yaml kubectl apply -f ./upgrade/agent-plan.yaml
+```
+
+## Debugging
+
+Cloud init logs can be found on the remote machines in:
+
+- /var/log/cloud-init-output.log
+- /var/log/cloud-init.log
+
+## Known issues
+
+- Sometimes at cluster bootstrapping the Cloud-Controllers reports that some routes couldn't be created. This issue was fixed in master. Just restart the cloud-controller and it will recreate them.
 
 ## Credits
 

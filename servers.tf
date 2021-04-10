@@ -31,6 +31,7 @@ resource "hcloud_server" "control_planes" {
       "until kubectl get node ${self.name}; do sleep 1; done",
       # Disable workloads on master node
       "kubectl taint node ${self.name} node-role.kubernetes.io/master=true:NoSchedule",
+      "kubectl taint node ${self.name} CriticalAddonsOnly=true:NoExecute",
     ]
 
     connection {

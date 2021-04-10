@@ -19,7 +19,7 @@ variable "server_location" {
 
 variable "servers_num" {
   description = "Number of control plane nodes."
-  default     = 3
+  default     = 2
 }
 
 variable "agents_num" {

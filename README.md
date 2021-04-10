@@ -4,9 +4,9 @@
 
 ### Zero friction Kubernetes stack on Hetzner Cloud
 
-This [terraform](https://www.terraform.io/) script will install a High Availability [K3s](https://k3s.io/) Cluster with Embedded DB in a private network on [Hetzner Cloud](https://www.hetzner.com/de/cloud). The following resources are provisionised by default (**20€/mo**):
+This [terraform](https://www.terraform.io/) script will install a High Availability [K3s](https://k3s.io/) Cluster with Embedded DB in a private network on [Hetzner Cloud](https://www.hetzner.com/de/cloud). The following resources are provisionised by default (**17€/mo or**):
 
-- 3x Control-plane: _CX11_, 2GB RAM, 1VCPU, 20GB NVMe, 20TB Traffic.
+- 2x Control-plane: _CX11_, 2GB RAM, 1VCPU, 20GB NVMe, 20TB Traffic.
 - 2x Worker: _CX21_, 4GB RAM, 2VCPU, 40GB NVMe, 20TB Traffic.
 - Network: Private network with one subnet.
 
@@ -72,7 +72,7 @@ terraform destroy
 | public_key      | Public ssh key                | string |              | true     |
 | hcloud_token    | API token                     | string |              | true     |
 | k3s_version     | K3s version                   | string | v1.20.5+k3s1 | false    |
-| servers_num     | Number of control plane nodes | string | 3            | false    |
+| servers_num     | Number of control plane nodes | string | 2            | false    |
 | agents_num      | Number of agent nodes         | string | 2            | false    |
 | server_location | Server location               | string | nbg1         | false    |
 
@@ -113,6 +113,19 @@ KUBECONFIG=kubeconfig.yaml kubectl apply -f ./upgrade/server-plan.yaml
 ```
 KUBECONFIG=kubeconfig.yaml kubectl apply -f ./upgrade/agent-plan.yaml
 ```
+
+## Backups
+
+K3s will automatically backup your embedded etcd datastore every 12 hours to `/var/lib/rancher/k3s/server/db/snapshots/`.
+You can reset the cluster by pointing to a specific snapshot.
+
+```sh
+./k3s server \
+  --cluster-reset \
+  --cluster-reset-restore-path=<PATH-TO-SNAPSHOT>
+```
+
+**Warning:** This forget all peers and the server becomes the sole member of a new cluster. You have to manually rejoin your server and agents. For production you should use an external datastore to automate this process.
 
 ## Debugging
 

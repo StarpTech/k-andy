@@ -19,7 +19,7 @@ variable "servers_num" {
 
 variable "agents_num" {
   description = "Number of agent nodes."
-  default     = 4
+  default     = 2
 }
 
 variable "server_location" {

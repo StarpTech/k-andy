@@ -119,13 +119,30 @@ KUBECONFIG=kubeconfig.yaml kubectl apply -f ./upgrade/agent-plan.yaml
 K3s will automatically backup your embedded etcd datastore every 12 hours to `/var/lib/rancher/k3s/server/db/snapshots/`.
 You can reset the cluster by pointing to a specific snapshot.
 
+1. Stop the master server.
+```sh
+sudo systemctl stop K3s
+```
+
+2. Restore the master server with a snapshot
 ```sh
 ./k3s server \
   --cluster-reset \
   --cluster-reset-restore-path=<PATH-TO-SNAPSHOT>
 ```
+**Warning:** This forget all peers and the server becomes the sole member of a new cluster. You have to manually rejoin all servers.
 
-**Warning:** This forget all peers and the server becomes the sole member of a new cluster. You have to manually rejoin your server and agents. For production you should use an external datastore to automate this process.
+3. Connect you with the different servers and run:
+
+```sh
+sudo systemctl stop K3s
+rm -rf /var/lib/rancher/k3s/data
+sudo systemctl start K3s
+```
+
+This will rejoin the server with the master server and reinitialize his etcd state.
+
+**Warning:** The procedure to restore multiple master server isn't documented on rancher.com. Hopefully, the documentation will be improved. I created an [issue](https://github.com/k3s-io/k3s/issues/3174) to discuss it.
 
 ## Debugging
 
@@ -133,6 +150,8 @@ Cloud init logs can be found on the remote machines in:
 
 - /var/log/cloud-init-output.log
 - /var/log/cloud-init.log
+- `journalctl -u k3s.service -e` last logs of the server
+- `journalctl -u k3s-agent.service -e` last logs of the agent
 
 ## Known issues
 

@@ -155,7 +155,7 @@ Cloud init logs can be found on the remote machines in:
 
 ## Known issues
 
-- Sometimes at cluster bootstrapping the Cloud-Controllers reports that some routes couldn't be created. This issue was fixed in master. Just restart the cloud-controller and it will recreate them.
+- Sometimes at cluster bootstrapping the Cloud-Controllers reports that some routes couldn't be created. This issue was fixed in master but wasn't released yet. Restart the cloud-controller and it will recreate them.
 
 ## Credits
 

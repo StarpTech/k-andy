@@ -4,7 +4,7 @@ resource "hcloud_server" "agents" {
 
   image       = data.hcloud_image.ubuntu.name
   server_type = local.agent_server_type
-  location    = local.server_location
+  location    = local.agent_locations[count.index][1]
 
   ssh_keys = [hcloud_ssh_key.default.id]
   labels = {

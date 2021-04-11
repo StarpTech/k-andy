@@ -9,6 +9,7 @@ This [terraform](https://www.terraform.io/) script will install a High Availabil
 - 2x Control-plane: _CX11_, 2GB RAM, 1VCPU, 20GB NVMe, 20TB Traffic.
 - 2x Worker: _CX21_, 4GB RAM, 2VCPU, 40GB NVMe, 20TB Traffic.
 - Network: Private network with one subnet.
+- Server and agent nodes are distributed across 2 Datacenter (nbg1, fsn1) for high availability.
 
 </br>
 </br>
@@ -74,7 +75,7 @@ terraform destroy
 | k3s_version     | K3s version                   | string | v1.20.5+k3s1 | false    |
 | servers_num     | Number of control plane nodes | string | 2            | false    |
 | agents_num      | Number of agent nodes         | string | 2            | false    |
-| server_location | Server location               | string | nbg1         | false    |
+| server_location | Prefered server location      | string | nbg1         | false    |
 
 ## Outputs
 
@@ -88,6 +89,7 @@ terraform destroy
 ### Prerequisite
 
 Install the system-upgrade-controller in your cluster.
+
 ```
 KUBECONFIG=kubeconfig.yaml kubectl apply -f ./upgrade/controller.yaml
 ```
@@ -120,16 +122,19 @@ K3s will automatically backup your embedded etcd datastore every 12 hours to `/v
 You can reset the cluster by pointing to a specific snapshot.
 
 1. Stop the master server.
+
 ```sh
 sudo systemctl stop k3s
 ```
 
 2. Restore the master server with a snapshot
+
 ```sh
 ./k3s server \
   --cluster-reset \
   --cluster-reset-restore-path=<PATH-TO-SNAPSHOT>
 ```
+
 **Warning:** This forget all peers and the server becomes the sole member of a new cluster. You have to manually rejoin all servers.
 
 3. Connect you with the different servers and run:

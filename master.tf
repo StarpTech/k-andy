@@ -3,7 +3,7 @@ resource "hcloud_server" "first_control_plane" {
 
   image       = data.hcloud_image.ubuntu.name
   server_type = local.control_plane_server_type
-  location    = local.server_location
+  location    = local.server_locations[0][1]
 
   ssh_keys = [hcloud_ssh_key.default.id]
   labels = {

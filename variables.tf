@@ -12,11 +12,6 @@ variable "private_key" {
   type        = string
 }
 
-variable "server_location" {
-  description = "Server location."
-  default = "nbg1"
-}
-
 variable "servers_num" {
   description = "Number of control plane nodes."
   default     = 2
@@ -24,7 +19,12 @@ variable "servers_num" {
 
 variable "agents_num" {
   description = "Number of agent nodes."
-  default     = 2
+  default     = 4
+}
+
+variable "server_location" {
+  description = "Default server location"
+  default     = "nbg1"
 }
 
 variable "k3s_version" {

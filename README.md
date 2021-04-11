@@ -121,7 +121,7 @@ You can reset the cluster by pointing to a specific snapshot.
 
 1. Stop the master server.
 ```sh
-sudo systemctl stop K3s
+sudo systemctl stop k3s
 ```
 
 2. Restore the master server with a snapshot
@@ -135,12 +135,12 @@ sudo systemctl stop K3s
 3. Connect you with the different servers and run:
 
 ```sh
-sudo systemctl stop K3s
+sudo systemctl stop k3s
 rm -rf /var/lib/rancher/k3s/data
-sudo systemctl start K3s
+sudo systemctl start k3s
 ```
 
-This will rejoin the server with the master server and reinitialize his etcd state.
+This will rejoin the server with the master server and reinitialize the etcd state.
 
 **Warning:** The procedure to restore multiple master server isn't documented on rancher.com. Hopefully, the documentation will be improved. I created an [issue](https://github.com/k3s-io/k3s/issues/3174) to discuss it.
 

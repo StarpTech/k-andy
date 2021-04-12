@@ -147,7 +147,7 @@ sudo systemctl start k3s
 
 This will rejoin the server with the master server and seed the etcd store.
 
-**Info:** It exists no official tool to automate the procedure. In future, rancher might provide an operator to handle this. [issue](https://github.com/k3s-io/k3s/issues/3174) to discuss it.
+**Info:** It exists no official tool to automate the procedure. In future, rancher might provide an operator to handle this ([issue](https://github.com/k3s-io/k3s/issues/3174)).
 
 ## Debugging
 

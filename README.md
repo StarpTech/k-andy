@@ -137,17 +137,17 @@ sudo systemctl stop k3s
 
 **Warning:** This forget all peers and the server becomes the sole member of a new cluster. You have to manually rejoin all servers.
 
-3. Connect you with the different servers and run:
+3. Connect you with the different servers backup and delete `/var/lib/rancher/k3s/server/db` on each peer etcd server and rejoin the nodes.
 
 ```sh
 sudo systemctl stop k3s
-rm -rf /var/lib/rancher/k3s/data
+rm -rf /var/lib/rancher/k3s/server/db
 sudo systemctl start k3s
 ```
 
-This will rejoin the server with the master server and reinitialize the etcd state.
+This will rejoin the server with the master server and seed the etcd store.
 
-**Warning:** The procedure to restore multiple master server isn't documented on rancher.com. Hopefully, the documentation will be improved. I created an [issue](https://github.com/k3s-io/k3s/issues/3174) to discuss it.
+**Info:** It exists no official tool to automate the procedure. In future, rancher might provide an operator to handle this. [issue](https://github.com/k3s-io/k3s/issues/3174) to discuss it.
 
 ## Debugging
 

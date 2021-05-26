@@ -72,7 +72,7 @@ terraform destroy
 | private_key     | Private ssh key               | string |              | true     |
 | public_key      | Public ssh key                | string |              | true     |
 | hcloud_token    | API token                     | string |              | true     |
-| k3s_version     | K3s version                   | string | v1.20.6+k3s1 | false    |
+| k3s_version     | K3s version                   | string | v1.21.1+k3s1 | false    |
 | servers_num     | Number of control plane nodes | string | 2            | false    |
 | agents_num      | Number of agent nodes         | string | 2            | false    |
 | server_location | Prefered server location      | string | nbg1         | false    |

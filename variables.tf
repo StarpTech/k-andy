@@ -14,7 +14,7 @@ variable "private_key" {
 
 variable "servers_num" {
   description = "Number of control plane nodes."
-  default     = 2
+  default     = 3
 }
 
 variable "agents_num" {

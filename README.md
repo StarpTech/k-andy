@@ -4,9 +4,9 @@
 
 ### Zero friction Kubernetes stack on Hetzner Cloud
 
-This [terraform](https://www.terraform.io/) script will install a High Availability [K3s](https://k3s.io/) Cluster with Embedded DB in a private network on [Hetzner Cloud](https://www.hetzner.com/de/cloud). The following resources are provisionised by default (**17€/mo or 0.00039/min**):
+This [terraform](https://www.terraform.io/) script will install a High Availability [K3s](https://k3s.io/) Cluster with Embedded DB in a private network on [Hetzner Cloud](https://www.hetzner.com/de/cloud). The following resources are provisionised by default (**20€/mo**):
 
-- 2x Control-plane: _CX11_, 2GB RAM, 1VCPU, 20GB NVMe, 20TB Traffic.
+- 3x Control-plane: _CX11_, 2GB RAM, 1VCPU, 20GB NVMe, 20TB Traffic.
 - 2x Worker: _CX21_, 4GB RAM, 2VCPU, 40GB NVMe, 20TB Traffic.
 - Network: Private network with one subnet.
 - Server and agent nodes are distributed across 2 Datacenter (nbg1, fsn1) for high availability.
@@ -73,7 +73,7 @@ terraform destroy
 | public_key      | Public ssh key                | string |              | true     |
 | hcloud_token    | API token                     | string |              | true     |
 | k3s_version     | K3s version                   | string | v1.21.1+k3s1 | false    |
-| servers_num     | Number of control plane nodes | string | 2            | false    |
+| servers_num     | Number of control plane nodes | string | 3            | false    |
 | agents_num      | Number of agent nodes         | string | 2            | false    |
 | server_location | Prefered server location      | string | nbg1         | false    |
 

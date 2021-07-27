@@ -53,22 +53,15 @@ terraform apply -var "hcloud_token=${hcloud_token}"
 
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
-### Resources
-
-| Name | Type |
-|------|------|
-| [hcloud_image.ubuntu](https://registry.terraform.io/providers/terraform-providers/hcloud/latest/docs/data-sources/image) | data source |
-| [template_file.ccm_manifest](https://registry.terraform.io/providers/hashicorp/template/latest/docs/data-sources/file) | data source |
-| [template_file.csi_manifest](https://registry.terraform.io/providers/hashicorp/template/latest/docs/data-sources/file) | data source |
-
 ### Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_agent_server_type"></a> [agent\_server\_type](#input\_agent\_server\_type) | n/a | `string` | `"cx21"` | no |
-| <a name="input_agents_server_count"></a> [agents\_server\_count](#input\_agents\_server\_count) | Number of agent nodes | `number` | `2` | no |
+| <a name="input_agent_server_count"></a> [agent\_server\_count](#input\_agent\_server\_count) | Number of agent nodes | `number` | `2` | no |
+| <a name="input_agent_server_type"></a> [agent\_server\_type](#input\_agent\_server\_type) | Server type of agent servers | `string` | `"cx21"` | no |
 | <a name="input_control_plane_server_count"></a> [control\_plane\_server\_count](#input\_control\_plane\_server\_count) | Number of control plane nodes | `number` | `3` | no |
-| <a name="input_control_plane_server_type"></a> [control\_plane\_server\_type](#input\_control\_plane\_server\_type) | n/a | `string` | `"cx11"` | no |
+| <a name="input_control_plane_server_type"></a> [control\_plane\_server\_type](#input\_control\_plane\_server\_type) | Server type of control plane servers | `string` | `"cx11"` | no |
+| <a name="input_hcloud_csi_driver_version"></a> [hcloud\_csi\_driver\_version](#input\_hcloud\_csi\_driver\_version) | n/a | `string` | `"v1.5.3"` | no |
 | <a name="input_hcloud_token"></a> [hcloud\_token](#input\_hcloud\_token) | Token to authenticate against Hetzner Cloud | `any` | n/a | yes |
 | <a name="input_k3s_version"></a> [k3s\_version](#input\_k3s\_version) | K3s version | `string` | `"v1.21.3+k3s1"` | no |
 | <a name="input_name"></a> [name](#input\_name) | Cluster name (used in various places, don't use special chars) | `any` | n/a | yes |

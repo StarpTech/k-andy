@@ -5,4 +5,4 @@ repos:
       - id: terraform_fmt
       - id: terraform_validate
       - id: terraform_docs
-        args: ['--args=--indent 3 --hide modules --hide providers --hide requirements --hide resources']
+        args: ['--args=--indent 3 --hide modules --hide providers --hide requirements --hide resources --hide data-sources']

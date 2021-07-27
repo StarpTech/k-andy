@@ -28,7 +28,7 @@ resource "hcloud_server" "first_control_plane" {
       "kubectl apply -f -<<EOF\n${data.template_file.ccm_manifest.rendered}\nEOF",
       # Install hetzner CSI plugin
       "kubectl -n kube-system create secret generic hcloud-csi --from-literal=token=${var.hcloud_token}",
-      "kubectl apply -f -<<EOF\n${data.template_file.csi_manifest.rendered}\nEOF",
+      "kubectl apply -f -<<EOF\n${data.http.hcloud_csi_driver_manifest.body}\nEOF",
     ]
 
     connection {

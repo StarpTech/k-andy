@@ -1,5 +1,5 @@
 resource "hcloud_server" "agent" {
-  count = var.agents_server_count
+  count = var.agent_server_count
   name  = "${var.name}-agent-${count.index}"
 
   image       = data.hcloud_image.ubuntu.name

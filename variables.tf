@@ -30,16 +30,18 @@ variable "control_plane_server_count" {
 }
 
 variable "control_plane_server_type" {
-  default = "cx11"
+  description = "Server type of control plane servers"
+  default     = "cx11"
 }
 
-variable "agents_server_count" {
+variable "agent_server_count" {
   description = "Number of agent nodes"
   default     = 2
 }
 
 variable "agent_server_type" {
-  default = "cx21"
+  description = "Server type of agent servers"
+  default     = "cx21"
 }
 
 variable "server_locations" {
@@ -52,6 +54,10 @@ variable "server_locations" {
 variable "k3s_version" {
   description = "K3s version"
   default     = "v1.21.3+k3s1"
+}
+
+variable "hcloud_csi_driver_version" {
+  default = "v1.5.3"
 }
 
 # Labels

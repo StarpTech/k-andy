@@ -4,12 +4,12 @@
 
 ### Zero friction Kubernetes stack on Hetzner Cloud
 
-This [terraform](https://www.terraform.io/) script will install a High Availability [K3s](https://k3s.io/) Cluster with Embedded DB in a private network on [Hetzner Cloud](https://www.hetzner.com/de/cloud). The following resources are provisionised by default (**20€/mo**):
+This [terraform](https://www.terraform.io/) module will install a High Availability [K3s](https://k3s.io/) Cluster with Embedded DB in a private network on [Hetzner Cloud](https://www.hetzner.com/de/cloud). The following resources are provisionised by default (**20€/mo**):
 
 - 3x Control-plane: _CX11_, 2GB RAM, 1VCPU, 20GB NVMe, 20TB Traffic.
 - 2x Worker: _CX21_, 4GB RAM, 2VCPU, 40GB NVMe, 20TB Traffic.
 - Network: Private network with one subnet.
-- Server and agent nodes are distributed across 2 Datacenter (nbg1, fsn1) for high availability.
+- Server and agent nodes are distributed across 3 Datacenters (nbg1, fsn1, hel1) for high availability.
 
 </br>
 </br>
@@ -29,15 +29,61 @@ K3s is a lightweight certified kubernetes distribution. It's packaged as single 
 
 ## Usage
 
-Run the following command to create a cluster.
+This is best used as a terraform module.
+
+Here is an example terraform file:
+
+```terraform
+variable "hcloud_token" {}
+
+module "demo" {
+  source = "https://github.com/StarpTech/k-andy.git"
+  hcloud_token = var.hcloud_token
+  name = "demo"
+}
+
+```
+
+You can apply it like this:
 
 ```sh
 terraform init
-terraform apply \
-    -var "hcloud_token=${hcloud_token}" \
-    -var "private_key=${private_key_location}" \
-    -var "public_key=${public_key_location}"
+terraform apply -var "hcloud_token=${hcloud_token}"
 ```
+
+
+<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+### Resources
+
+| Name | Type |
+|------|------|
+| [hcloud_image.ubuntu](https://registry.terraform.io/providers/terraform-providers/hcloud/latest/docs/data-sources/image) | data source |
+| [template_file.ccm_manifest](https://registry.terraform.io/providers/hashicorp/template/latest/docs/data-sources/file) | data source |
+| [template_file.csi_manifest](https://registry.terraform.io/providers/hashicorp/template/latest/docs/data-sources/file) | data source |
+
+### Inputs
+
+| Name | Description | Type | Default | Required |
+|------|-------------|------|---------|:--------:|
+| <a name="input_agent_server_type"></a> [agent\_server\_type](#input\_agent\_server\_type) | n/a | `string` | `"cx21"` | no |
+| <a name="input_agents_server_count"></a> [agents\_server\_count](#input\_agents\_server\_count) | Number of agent nodes | `number` | `2` | no |
+| <a name="input_control_plane_server_count"></a> [control\_plane\_server\_count](#input\_control\_plane\_server\_count) | Number of control plane nodes | `number` | `3` | no |
+| <a name="input_control_plane_server_type"></a> [control\_plane\_server\_type](#input\_control\_plane\_server\_type) | n/a | `string` | `"cx11"` | no |
+| <a name="input_hcloud_token"></a> [hcloud\_token](#input\_hcloud\_token) | Token to authenticate against Hetzner Cloud | `any` | n/a | yes |
+| <a name="input_k3s_version"></a> [k3s\_version](#input\_k3s\_version) | K3s version | `string` | `"v1.21.3+k3s1"` | no |
+| <a name="input_name"></a> [name](#input\_name) | Cluster name (used in various places, don't use special chars) | `any` | n/a | yes |
+| <a name="input_network_cidr"></a> [network\_cidr](#input\_network\_cidr) | Network in which the cluster will be placed | `string` | `"10.0.0.0/16"` | no |
+| <a name="input_server_locations"></a> [server\_locations](#input\_server\_locations) | Server locations in which servers will be distributed | `list` | <pre>[<br>  "nbg1",<br>  "fsn1",<br>  "hel1"<br>]</pre> | no |
+| <a name="input_subnet_cidr"></a> [subnet\_cidr](#input\_subnet\_cidr) | Subnet in which all nodes are placed | `string` | `"10.0.1.0/24"` | no |
+
+### Outputs
+
+| Name | Description |
+|------|-------------|
+| <a name="output_agents_public_ips"></a> [agents\_public\_ips](#output\_agents\_public\_ips) | The public IP addresses of the agent servers |
+| <a name="output_control_planes_public_ips"></a> [control\_planes\_public\_ips](#output\_control\_planes\_public\_ips) | The public IP addresses of the control plane servers |
+<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+
 
 ## Cluster access
 
@@ -64,25 +110,6 @@ If you no longer need the cluster don't forget to destroy it. Load-Balancers and
 ```sh
 terraform destroy
 ```
-
-## Inputs
-
-| Name            | Description                   | Type   | Default      | Required |
-| --------------- | ----------------------------- | ------ | ------------ | -------- |
-| private_key     | Private ssh key               | string |              | true     |
-| public_key      | Public ssh key                | string |              | true     |
-| hcloud_token    | API token                     | string |              | true     |
-| k3s_version     | K3s version                   | string | v1.21.1+k3s1 | false    |
-| servers_num     | Number of control plane nodes | string | 3            | false    |
-| agents_num      | Number of agent nodes         | string | 2            | false    |
-| server_location | Prefered server location      | string | nbg1         | false    |
-
-## Outputs
-
-| Name                    | Description                                        | Type   |
-| ----------------------- | -------------------------------------------------- | ------ |
-| controlplanes_public_ip | The public IP addresses of the controlplane server | string |
-| agents_public_ip        | The public IP addresses of the agent server        | string |
 
 ## Auto-Upgrade
 

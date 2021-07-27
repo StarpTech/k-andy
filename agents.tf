@@ -1,17 +1,15 @@
-resource "hcloud_server" "agents" {
-  count = var.agents_num
-  name  = "k3s-agent-${count.index}"
+resource "hcloud_server" "agent" {
+  count = var.agents_server_count
+  name  = "${var.name}-agent-${count.index}"
 
   image       = data.hcloud_image.ubuntu.name
-  server_type = local.agent_server_type
-  location    = local.agent_locations[count.index][1]
+  server_type = var.agent_server_type
+  location    = element(var.server_locations, count.index)
 
-  ssh_keys = [hcloud_ssh_key.default.id]
-  labels = {
-    provisioner = "terraform",
-    engine      = "k3s",
-    node_type   = "worker"
-  }
+  ssh_keys = [hcloud_ssh_key.provision_public.id]
+  labels = merge({
+    node_type = "worker"
+  }, local.common_labels)
 
   user_data = <<-EOT
   #cloud-config
@@ -33,14 +31,14 @@ resource "hcloud_server" "agents" {
       host        = self.ipv4_address
       type        = "ssh"
       user        = "root"
-      private_key = file(var.private_key)
+      private_key = tls_private_key.provision.private_key_pem
     }
   }
 }
 
 resource "hcloud_server_network" "agents_network" {
-  count     = length(hcloud_server.agents)
-  server_id = hcloud_server.agents[count.index].id
+  count     = length(hcloud_server.agent)
+  server_id = hcloud_server.agent[count.index].id
   subnet_id = hcloud_network_subnet.k3s_nodes.id
-  ip        = cidrhost(hcloud_network_subnet.k3s_nodes.ip_range, 2 + var.servers_num + count.index)
+  ip        = cidrhost(hcloud_network_subnet.k3s_nodes.ip_range, 2 + var.control_plane_server_count + count.index)
 }

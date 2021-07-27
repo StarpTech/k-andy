@@ -1,16 +1,14 @@
 resource "hcloud_server" "first_control_plane" {
-  name = "k3s-control-plane-0"
+  name = "${var.name}-control-plane-0"
 
   image       = data.hcloud_image.ubuntu.name
-  server_type = local.control_plane_server_type
-  location    = local.server_locations[0][1]
+  server_type = var.control_plane_server_type
+  location    = var.server_locations[0]
 
-  ssh_keys = [hcloud_ssh_key.default.id]
-  labels = {
-    provisioner = "terraform",
-    engine      = "k3s",
-    node_type   = "control-plane"
-  }
+  ssh_keys = [hcloud_ssh_key.provision_public.id]
+  labels = merge({
+    node_type = "control-plane"
+  }, local.common_labels)
   # logs can be found in /var/log/cloud-init-output.log and /var/log/cloud-init.log
   user_data = <<-EOT
   #cloud-config
@@ -37,16 +35,16 @@ resource "hcloud_server" "first_control_plane" {
       host        = self.ipv4_address
       type        = "ssh"
       user        = "root"
-      private_key = file(var.private_key)
+      private_key = tls_private_key.provision.private_key_pem
     }
   }
 
   provisioner "local-exec" {
-    command = "scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ${var.private_key} root@${self.ipv4_address}:/etc/rancher/k3s/k3s.yaml ./kubeconfig.yaml"
+    command = "scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ${local_file.ssh_private_key.filename} root@${self.ipv4_address}:/etc/rancher/k3s/k3s.yaml ./kubeconfig-${var.name}.yaml"
   }
 
   provisioner "local-exec" {
-    command = "sed -i -e 's/127.0.0.1/${self.ipv4_address}/g' ./kubeconfig.yaml"
+    command = "sed -i -e 's/127.0.0.1/${self.ipv4_address}/g' ./kubeconfig-${var.name}.yaml"
   }
 }
 

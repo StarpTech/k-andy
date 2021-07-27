@@ -1,33 +1,66 @@
-variable "hcloud_token" {}
+# Hetzner Cloud
 
-provider "hcloud" {
-  token = var.hcloud_token
-}
-variable "public_key" {
-  description = "SSH public Key."
-  type        = string
-}
-variable "private_key" {
-  description = "SSH private Key."
-  type        = string
+variable "hcloud_token" {
+  description = "Token to authenticate against Hetzner Cloud"
 }
 
-variable "servers_num" {
-  description = "Number of control plane nodes."
+# Cluster Configuration
+
+variable "name" {
+  description = "Cluster name (used in various places, don't use special chars)"
+}
+
+## Network
+
+variable "network_cidr" {
+  description = "Network in which the cluster will be placed"
+  default     = "10.0.0.0/16"
+}
+
+variable "subnet_cidr" {
+  description = "Subnet in which all nodes are placed"
+  default     = "10.0.1.0/24"
+}
+
+## Servers
+
+variable "control_plane_server_count" {
+  description = "Number of control plane nodes"
   default     = 3
 }
 
-variable "agents_num" {
-  description = "Number of agent nodes."
+variable "control_plane_server_type" {
+  default = "cx11"
+}
+
+variable "agents_server_count" {
+  description = "Number of agent nodes"
   default     = 2
 }
 
-variable "server_location" {
-  description = "Default server location"
-  default     = "nbg1"
+variable "agent_server_type" {
+  default = "cx21"
 }
+
+variable "server_locations" {
+  description = "Server locations in which servers will be distributed"
+  default     = ["nbg1", "fsn1", "hel1"]
+}
+
+## Versions
 
 variable "k3s_version" {
   description = "K3s version"
-  default     = "v1.21.1+k3s1"
+  default     = "v1.21.3+k3s1"
+}
+
+# Labels
+
+locals {
+  common_labels = {
+    cluster     = var.name
+    provisioner = "terraform",
+    module      = "k-andy"
+    engine      = "k3s",
+  }
 }

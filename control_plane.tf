@@ -1,17 +1,15 @@
-resource "hcloud_server" "control_planes" {
-  count = var.servers_num - 1
-  name  = "k3s-control-plane-${count.index + 1}"
+resource "hcloud_server" "control_plane" {
+  count = var.control_plane_server_count - 1
+  name  = "${var.name}-control-plane-${count.index + 1}"
 
   image       = data.hcloud_image.ubuntu.name
-  server_type = local.control_plane_server_type
-  location    = local.server_locations[count.index+1][1]
+  server_type = var.control_plane_server_type
+  location    = element(var.server_locations, count.index + 1)
 
-  ssh_keys = [hcloud_ssh_key.default.id]
-  labels = {
-    provisioner = "terraform",
-    engine      = "k3s",
-    node_type   = "control-plane"
-  }
+  ssh_keys = [hcloud_ssh_key.provision_public.id]
+  labels = merge({
+    node_type = "control-plane"
+  }, local.common_labels)
 
   user_data = <<-EOT
   #cloud-config
@@ -38,7 +36,7 @@ resource "hcloud_server" "control_planes" {
       host        = self.ipv4_address
       type        = "ssh"
       user        = "root"
-      private_key = file(var.private_key)
+      private_key = tls_private_key.provision.private_key_pem
     }
   }
 
@@ -48,8 +46,7 @@ resource "hcloud_server" "control_planes" {
 }
 
 resource "hcloud_server_network" "control_planes" {
-  count     = var.servers_num - 1
+  for_each  = { for server in hcloud_server.control_plane : server.name => server }
   subnet_id = hcloud_network_subnet.k3s_nodes.id
-  server_id = hcloud_server.control_planes[count.index].id
-  ip        = cidrhost(hcloud_network_subnet.k3s_nodes.ip_range, 3 + count.index)
+  server_id = each.value.id
 }

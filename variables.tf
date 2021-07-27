@@ -10,6 +10,11 @@ variable "name" {
   description = "Cluster name (used in various places, don't use special chars)"
 }
 
+variable "create_kubeconfig" {
+  description = "Create a local kubeconfig file to connect to the cluster"
+  default     = true
+}
+
 ## Network
 
 variable "network_cidr" {

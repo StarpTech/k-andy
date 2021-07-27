@@ -61,6 +61,7 @@ terraform apply -var "hcloud_token=${hcloud_token}"
 | <a name="input_agent_server_type"></a> [agent\_server\_type](#input\_agent\_server\_type) | Server type of agent servers | `string` | `"cx21"` | no |
 | <a name="input_control_plane_server_count"></a> [control\_plane\_server\_count](#input\_control\_plane\_server\_count) | Number of control plane nodes | `number` | `3` | no |
 | <a name="input_control_plane_server_type"></a> [control\_plane\_server\_type](#input\_control\_plane\_server\_type) | Server type of control plane servers | `string` | `"cx11"` | no |
+| <a name="input_create_kubeconfig"></a> [create\_kubeconfig](#input\_create\_kubeconfig) | Create a local kubeconfig file to connect to the cluster | `bool` | `true` | no |
 | <a name="input_hcloud_csi_driver_version"></a> [hcloud\_csi\_driver\_version](#input\_hcloud\_csi\_driver\_version) | n/a | `string` | `"v1.5.3"` | no |
 | <a name="input_hcloud_token"></a> [hcloud\_token](#input\_hcloud\_token) | Token to authenticate against Hetzner Cloud | `any` | n/a | yes |
 | <a name="input_k3s_version"></a> [k3s\_version](#input\_k3s\_version) | K3s version | `string` | `"v1.21.3+k3s1"` | no |
@@ -75,6 +76,7 @@ terraform apply -var "hcloud_token=${hcloud_token}"
 |------|-------------|
 | <a name="output_agents_public_ips"></a> [agents\_public\_ips](#output\_agents\_public\_ips) | The public IP addresses of the agent servers |
 | <a name="output_control_planes_public_ips"></a> [control\_planes\_public\_ips](#output\_control\_planes\_public\_ips) | The public IP addresses of the control plane servers |
+| <a name="output_kubeconfig"></a> [kubeconfig](#output\_kubeconfig) | Kubeconfig with external IP address |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 
 

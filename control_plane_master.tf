@@ -39,13 +39,6 @@ resource "hcloud_server" "first_control_plane" {
     }
   }
 
-  provisioner "local-exec" {
-    command = "scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ${local_file.ssh_private_key.filename} root@${self.ipv4_address}:/etc/rancher/k3s/k3s.yaml ./kubeconfig-${var.name}.yaml"
-  }
-
-  provisioner "local-exec" {
-    command = "sed -i -e 's/127.0.0.1/${self.ipv4_address}/g' ./kubeconfig-${var.name}.yaml"
-  }
 }
 
 resource "hcloud_server_network" "first_control_plane" {

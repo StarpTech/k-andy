@@ -7,3 +7,12 @@ module "demo_cluster" {
   name             = "demo"
   server_locations = ["nbg1", "fsn1"]
 }
+
+output "control_plane_ips" {
+  value = module.demo_cluster.control_planes_public_ips
+}
+
+output "k3s_token" {
+  value     = module.demo_cluster.k3s_token
+  sensitive = true
+}

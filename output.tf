@@ -7,3 +7,9 @@ output "agents_public_ips" {
   value       = hcloud_server.agent[*].ipv4_address
   description = "The public IP addresses of the agent servers"
 }
+
+output "k3s_token" {
+  description = "Secret k3s authentication token"
+  value       = random_password.k3s_cluster_secret.result
+  sensitive   = true
+}

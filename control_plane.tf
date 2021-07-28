@@ -36,7 +36,7 @@ resource "hcloud_server" "control_plane" {
       host        = self.ipv4_address
       type        = "ssh"
       user        = "root"
-      private_key = tls_private_key.provision.private_key_pem
+      private_key = local.ssh_private_key
     }
   }
 

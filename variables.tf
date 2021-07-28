@@ -54,6 +54,14 @@ variable "server_locations" {
   default     = ["nbg1", "fsn1", "hel1"]
 }
 
+## Server Access
+
+variable "ssh_private_key_location" {
+  description = "Use this private SSH key instead of generating a new one (Attention: Encrypted keys are not supported)"
+  default     = null
+  type        = string
+}
+
 ## Versions
 
 variable "k3s_version" {

@@ -29,28 +29,7 @@ K3s is a lightweight certified kubernetes distribution. It's packaged as single 
 
 ## Usage
 
-This is best used as a terraform module.
-
-Here is an example terraform file:
-
-```terraform
-variable "hcloud_token" {}
-
-module "demo" {
-  source = "https://github.com/StarpTech/k-andy.git"
-  hcloud_token = var.hcloud_token
-  name = "demo"
-}
-
-```
-
-You can apply it like this:
-
-```sh
-terraform init
-terraform apply -var "hcloud_token=${hcloud_token}"
-```
-
+See a more detailed example with walk-through in the [example folder](./example).
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ### Inputs
@@ -78,33 +57,6 @@ terraform apply -var "hcloud_token=${hcloud_token}"
 | <a name="output_control_planes_public_ips"></a> [control\_planes\_public\_ips](#output\_control\_planes\_public\_ips) | The public IP addresses of the control plane servers |
 | <a name="output_kubeconfig"></a> [kubeconfig](#output\_kubeconfig) | Kubeconfig with external IP address |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
-
-
-## Cluster access
-
-`terraform apply` will copy the kubeconfig from the master server to your current working directory. The file `kubeconfig.yaml` is created. Run:
-
-```sh
-KUBECONFIG=kubeconfig.yaml kubectl get node
-```
-
-## Demo
-
-A demo application can be found in [manifests](manifests/hello-kubernetes.yaml). Run:
-
-```sh
-KUBECONFIG=kubeconfig.yaml kubectl apply -f manifests/hello-kubernetes.yaml
-```
-
-and try to access `http://<load-balancer-ip>:8080`.
-
-## Destroy your cluster
-
-If you no longer need the cluster don't forget to destroy it. Load-Balancers and volumes must be deleted manually.
-
-```sh
-terraform destroy
-```
 
 ## Auto-Upgrade
 

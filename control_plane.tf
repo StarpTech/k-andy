@@ -1,26 +1,29 @@
 resource "hcloud_server" "control_plane" {
-  count = var.control_plane_server_count - 1
-  name  = "${var.name}-control-plane-${count.index + 1}"
+  for_each = { for i in range(1, var.control_plane_server_count) : i => i }
+  name     = "${var.name}-control-plane-${each.key}"
 
   image       = data.hcloud_image.ubuntu.name
   server_type = var.control_plane_server_type
-  location    = element(var.server_locations, count.index + 1)
+  location    = element(var.server_locations, each.key)
 
   ssh_keys = [hcloud_ssh_key.provision_public.id]
   labels = merge({
     node_type = "control-plane"
   }, local.common_labels)
 
-  user_data = <<-EOT
-  #cloud-config
-  # Initialize cluster after first boot
-  runcmd:
-    - curl -sfL https://get.k3s.io | K3S_TOKEN="${random_password.k3s_cluster_secret.result}" INSTALL_K3S_VERSION="${var.k3s_version}" sh -s - server --server https://${local.first_control_plane_ip}:6443 --disable local-storage --disable-cloud-controller --disable traefik --disable servicelb --kubelet-arg="cloud-provider=external"
-  EOT
+  # Join cluster as server after first boot
+  user_data = format("%s\n%s", "#cloud-config", yamlencode(
+    {
+      runcmd = [
+        "curl -sfL https://get.k3s.io | K3S_TOKEN='${random_password.k3s_cluster_secret.result}' INSTALL_K3S_VERSION='${var.k3s_version}' sh -s - server --server 'https://${local.first_control_plane_ip}:6443' --disable local-storage --disable-cloud-controller --disable traefik --disable servicelb --kubelet-arg='cloud-provider=external'"
+      ]
+      packages = var.server_additional_packages
+    }
+  ))
 
   network {
-    ip         = cidrhost(hcloud_network_subnet.k3s_nodes.ip_range, 3 + count.index)
     network_id = hcloud_network.k3s.id
+    ip         = cidrhost(hcloud_network_subnet.k3s_nodes.ip_range, each.key + 1)
   }
 
   provisioner "remote-exec" {
@@ -45,8 +48,9 @@ resource "hcloud_server" "control_plane" {
   ]
 }
 
-resource "hcloud_server_network" "control_planes" {
-  for_each  = { for server in hcloud_server.control_plane : server.name => server }
+resource "hcloud_server_network" "control_plane" {
+  for_each  = { for i in range(1, var.control_plane_server_count) : i => i } // starts at 1 because master was 0
   subnet_id = hcloud_network_subnet.k3s_nodes.id
-  server_id = each.value.id
+  server_id = hcloud_server.control_plane[each.key].id
+  ip        = cidrhost(hcloud_network_subnet.k3s_nodes.ip_range, each.key + 1)
 }

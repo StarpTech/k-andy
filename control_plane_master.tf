@@ -9,12 +9,15 @@ resource "hcloud_server" "first_control_plane" {
   labels = merge({
     node_type = "control-plane"
   }, local.common_labels)
-  # logs can be found in /var/log/cloud-init-output.log and /var/log/cloud-init.log
-  user_data = <<-EOT
-  #cloud-config
-  runcmd:
-    - curl -sfL https://get.k3s.io | K3S_TOKEN="${random_password.k3s_cluster_secret.result}" INSTALL_K3S_VERSION="${var.k3s_version}" sh -s - server --cluster-init --disable local-storage --disable-cloud-controller --disable traefik --disable servicelb --kubelet-arg="cloud-provider=external"
-  EOT
+
+  user_data = format("%s\n%s", "#cloud-config", yamlencode(
+    {
+      runcmd = [
+        "curl -sfL https://get.k3s.io | K3S_TOKEN='${random_password.k3s_cluster_secret.result}' INSTALL_K3S_VERSION='${var.k3s_version}' sh -s - server --cluster-init --disable local-storage --disable-cloud-controller --disable traefik --disable servicelb --kubelet-arg='cloud-provider=external'"
+      ]
+      packages = var.server_additional_packages
+    }
+  ))
 
   provisioner "remote-exec" {
     inline = [

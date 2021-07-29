@@ -46,6 +46,7 @@ See a more detailed example with walk-through in the [example folder](./example)
 | <a name="input_k3s_version"></a> [k3s\_version](#input\_k3s\_version) | K3s version | `string` | `"v1.21.3+k3s1"` | no |
 | <a name="input_name"></a> [name](#input\_name) | Cluster name (used in various places, don't use special chars) | `any` | n/a | yes |
 | <a name="input_network_cidr"></a> [network\_cidr](#input\_network\_cidr) | Network in which the cluster will be placed | `string` | `"10.0.0.0/16"` | no |
+| <a name="input_server_additional_packages"></a> [server\_additional\_packages](#input\_server\_additional\_packages) | Additional packages which will be installed on node creation | `list(string)` | `[]` | no |
 | <a name="input_server_locations"></a> [server\_locations](#input\_server\_locations) | Server locations in which servers will be distributed | `list` | <pre>[<br>  "nbg1",<br>  "fsn1",<br>  "hel1"<br>]</pre> | no |
 | <a name="input_ssh_private_key_location"></a> [ssh\_private\_key\_location](#input\_ssh\_private\_key\_location) | Use this private SSH key instead of generating a new one (Attention: Encrypted keys are not supported) | `string` | `null` | no |
 | <a name="input_subnet_cidr"></a> [subnet\_cidr](#input\_subnet\_cidr) | Subnet in which all nodes are placed | `string` | `"10.0.1.0/24"` | no |
@@ -54,12 +55,36 @@ See a more detailed example with walk-through in the [example folder](./example)
 
 | Name | Description |
 |------|-------------|
+| <a name="output_agent_name_map"></a> [agent\_name\_map](#output\_agent\_name\_map) | n/a |
 | <a name="output_agents_public_ips"></a> [agents\_public\_ips](#output\_agents\_public\_ips) | The public IP addresses of the agent servers |
 | <a name="output_control_planes_public_ips"></a> [control\_planes\_public\_ips](#output\_control\_planes\_public\_ips) | The public IP addresses of the control plane servers |
 | <a name="output_k3s_token"></a> [k3s\_token](#output\_k3s\_token) | Secret k3s authentication token |
 | <a name="output_kubeconfig"></a> [kubeconfig](#output\_kubeconfig) | Kubeconfig with external IP address |
 | <a name="output_ssh_private_key"></a> [ssh\_private\_key](#output\_ssh\_private\_key) | Key to SSH into nodes |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+
+## Common Operations
+
+### Agent server replacement
+
+If you need to cycle an agent, you can do that with a single node following this procedure.
+Replace the number with the server you want to recreate!
+
+Make sure you drain the nodes first. To make sure you have the correct ID for the node you can consult the output `agent_name_map`.
+
+```shell
+terraform taint 'module.my_cluster.hcloud_server.agent["1"]'
+terraform taint 'module.my_cluster.random_pet.agent_suffix[1]'
+terraform apply
+```
+
+This will recreate agent-1 with a new pet name. The names are given to easily tell agents apart.
+
+If you plan to replace all the servers, you can taint all pet names using:
+
+```shell
+terraform state list | grep agent_suffix | xargs -n1 terraform taint
+```
 
 ## Auto-Upgrade
 
@@ -130,8 +155,8 @@ This will rejoin the server with the master server and seed the etcd store.
 
 Cloud init logs can be found on the remote machines in:
 
-- /var/log/cloud-init-output.log
-- /var/log/cloud-init.log
+- `/var/log/cloud-init-output.log`
+- `/var/log/cloud-init.log`
 - `journalctl -u k3s.service -e` last logs of the server
 - `journalctl -u k3s-agent.service -e` last logs of the agent
 

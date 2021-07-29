@@ -54,6 +54,14 @@ variable "server_locations" {
   default     = ["nbg1", "fsn1", "hel1"]
 }
 
+## Server Configuration
+
+variable "server_additional_packages" {
+  description = "Additional packages which will be installed on node creation"
+  default     = []
+  type        = list(string)
+}
+
 ## Server Access
 
 variable "ssh_private_key_location" {

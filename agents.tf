@@ -4,15 +4,16 @@ resource "random_pet" "agent_suffix" {
 
 locals {
   agent_pet_names = [for pet in random_pet.agent_suffix : pet.id]
+  agent_name_map  = { for i in range(0, var.agent_server_count) : random_pet.agent_suffix[i].id => i }
 }
 
 resource "hcloud_server" "agent" {
-  for_each = { for i in range(0, var.agent_server_count) : i => local.agent_pet_names[i] }
-  name     = "${var.name}-agent-${each.value}"
+  for_each = { for i in range(0, var.agent_server_count) : "#${i}" => i }
+  name     = "${var.name}-agent-${local.agent_pet_names[each.value]}"
 
   image       = data.hcloud_image.ubuntu.name
   server_type = var.agent_server_type
-  location    = element(var.server_locations, each.key)
+  location    = element(var.server_locations, each.value)
 
   ssh_keys = [hcloud_ssh_key.provision_public.id]
   labels = merge({
@@ -20,7 +21,8 @@ resource "hcloud_server" "agent" {
   }, local.common_labels)
 
   # Join cluster as agent after first boot
-  user_data = format("%s\n%s", "#cloud-config", yamlencode(
+  # Adding the random pet name as comment is a trick to recreate the server on pet-name change
+  user_data = format("%s\n#%s\n%s", "#cloud-config", local.agent_pet_names[each.value], yamlencode(
     {
       runcmd = [
         "curl -sfL https://get.k3s.io | K3S_URL='https://${local.first_control_plane_ip}:6443' INSTALL_K3S_VERSION='${var.k3s_version}' K3S_TOKEN='${random_password.k3s_cluster_secret.result}' sh -s - agent --kubelet-arg='cloud-provider=external'"
@@ -28,6 +30,11 @@ resource "hcloud_server" "agent" {
       packages = var.server_additional_packages
     }
   ))
+
+  network {
+    network_id = hcloud_network.k3s.id
+    ip         = cidrhost(hcloud_network_subnet.k3s_nodes.ip_range, 33 + each.value)
+  }
 
   depends_on = [
     # Control plane server must be created before the worker node can be attached
@@ -49,8 +56,8 @@ resource "hcloud_server" "agent" {
 }
 
 resource "hcloud_server_network" "agent" {
-  for_each  = { for i in range(0, var.agent_server_count) : i => i }
+  for_each  = { for i in range(0, var.agent_server_count) : "#${i}" => i }
   subnet_id = hcloud_network_subnet.k3s_nodes.id
   server_id = hcloud_server.agent[each.key].id
-  ip        = cidrhost(hcloud_network_subnet.k3s_nodes.ip_range, 33 + each.key) // start at x.y.z.33
+  ip        = cidrhost(hcloud_network_subnet.k3s_nodes.ip_range, 33 + each.value) // start at x.y.z.33
 }

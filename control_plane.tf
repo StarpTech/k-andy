@@ -1,10 +1,10 @@
 resource "hcloud_server" "control_plane" {
-  for_each = { for i in range(1, var.control_plane_server_count) : i => i }
-  name     = "${var.name}-control-plane-${each.key}"
+  for_each = { for i in range(1, var.control_plane_server_count) : "#${i}" => i }
+  name     = "${var.name}-control-plane-${each.value}"
 
   image       = data.hcloud_image.ubuntu.name
   server_type = var.control_plane_server_type
-  location    = element(var.server_locations, each.key)
+  location    = element(var.server_locations, each.value)
 
   ssh_keys = [hcloud_ssh_key.provision_public.id]
   labels = merge({
@@ -23,7 +23,7 @@ resource "hcloud_server" "control_plane" {
 
   network {
     network_id = hcloud_network.k3s.id
-    ip         = cidrhost(hcloud_network_subnet.k3s_nodes.ip_range, each.key + 1)
+    ip         = cidrhost(hcloud_network_subnet.k3s_nodes.ip_range, each.value + 1)
   }
 
   provisioner "remote-exec" {
@@ -49,8 +49,8 @@ resource "hcloud_server" "control_plane" {
 }
 
 resource "hcloud_server_network" "control_plane" {
-  for_each  = { for i in range(1, var.control_plane_server_count) : i => i } // starts at 1 because master was 0
+  for_each  = { for i in range(1, var.control_plane_server_count) : "#${i}" => i } // starts at 1 because master was 0
   subnet_id = hcloud_network_subnet.k3s_nodes.id
   server_id = hcloud_server.control_plane[each.key].id
-  ip        = cidrhost(hcloud_network_subnet.k3s_nodes.ip_range, each.key + 1)
+  ip        = cidrhost(hcloud_network_subnet.k3s_nodes.ip_range, each.value + 1)
 }

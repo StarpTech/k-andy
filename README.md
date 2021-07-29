@@ -70,20 +70,28 @@ See a more detailed example with walk-through in the [example folder](./example)
 If you need to cycle an agent, you can do that with a single node following this procedure.
 Replace the number with the server you want to recreate!
 
-Make sure you drain the nodes first. To make sure you have the correct ID for the node you can consult the output `agent_name_map`.
+To make sure you have the correct ID for the node you can consult the output `agent_name_map`.
+
+Make sure you drain the nodes first. 
 
 ```shell
-terraform taint 'module.my_cluster.hcloud_server.agent["1"]'
 terraform taint 'module.my_cluster.random_pet.agent_suffix[1]'
 terraform apply
 ```
 
-This will recreate agent-1 with a new pet name. The names are given to easily tell agents apart.
-
-If you plan to replace all the servers, you can taint all pet names using:
+This will recreate the agent with this pet name. If you plan to replace all the servers, you can taint all pet names using:
 
 ```shell
 terraform state list | grep agent_suffix | xargs -n1 terraform taint
+```
+
+### Control Plane server replacement
+
+Currently you should only replace the servers which didn't initialize the cluster.
+
+```shell
+terraform taint 'module.my_cluster.hcloud_server.control_plane["#1"]'
+terraform apply
 ```
 
 ## Auto-Upgrade

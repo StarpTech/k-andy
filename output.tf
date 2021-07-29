@@ -20,10 +20,6 @@ output "k3s_token" {
   sensitive   = true
 }
 
-locals {
-  agent_name_map = { for i in range(0, var.agent_server_count) : random_pet.agent_suffix[i].id => i }
-}
-
 output "agent_name_map" {
   value = local.agent_name_map
 }

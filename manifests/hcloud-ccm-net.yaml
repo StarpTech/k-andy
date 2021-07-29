@@ -49,6 +49,7 @@ spec:
           operator: "Exists"
         # cloud controller manages should be able to run on masters
         - key: "node-role.kubernetes.io/master"
+          operator: Exists
           effect: NoSchedule
         - key: "node-role.kubernetes.io/control-plane"
           effect: NoSchedule

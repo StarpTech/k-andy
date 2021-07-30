@@ -1,0 +1,8 @@
+repos:
+  - repo: https://github.com/antonbabenko/pre-commit-terraform
+    rev: v1.50.0
+    hooks:
+      - id: terraform_fmt
+      - id: terraform_validate
+      - id: terraform_docs
+        args: ['--args=--indent 3 --hide modules --hide providers --hide requirements --hide resources --hide data-sources']

@@ -1,0 +1,4 @@
+.terraform
+.envrc
+kubeconfig*
+*.lock.hcl

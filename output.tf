@@ -23,3 +23,7 @@ output "k3s_token" {
 output "agent_name_map" {
   value = local.agent_name_map
 }
+
+output "network_id" {
+  value = hcloud_network.k3s.id
+}

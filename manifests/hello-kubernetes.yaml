@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: hello-kubernetes
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: hello-kubernetes
@@ -13,32 +13,36 @@ spec:
         app: hello-kubernetes
     spec:
       containers:
-      - name: hello-kubernetes
-        image: paulbouwer/hello-kubernetes:1.10
-        ports:
-        - name: http
-          containerPort: 8080
-        livenessProbe:
-          httpGet:
-            path: /
-            port: http
-        readinessProbe:
-          httpGet:
-            path: /
-            port: http
-        env:
-        - name: KUBERNETES_NAMESPACE
-          valueFrom:
-            fieldRef:
-              fieldPath: metadata.namespace
-        - name: KUBERNETES_POD_NAME
-          valueFrom:
-            fieldRef:
-              fieldPath: metadata.name
-        - name: KUBERNETES_NODE_NAME
-          valueFrom:
-            fieldRef:
-              fieldPath: spec.nodeName
+        - name: hello-kubernetes
+          image: paulbouwer/hello-kubernetes:1.10
+          ports:
+            - name: http
+              containerPort: 8080
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          env:
+            - name: KUBERNETES_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: KUBERNETES_POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: KUBERNETES_NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+      volumes:
+        - name: my-csi-volume
+          persistentVolumeClaim:
+            claimName: csi-pvc
 ---
 apiVersion: v1
 kind: Service
@@ -46,34 +50,22 @@ metadata:
   name: hello-kubernetes
   annotations:
     load-balancer.hetzner.cloud/location: nbg1
-    load-balancer.hetzner.cloud/use-private-ip: "true"
 spec:
-  type: ClusterIP
+  type: LoadBalancer
   ports:
-  - port: 8080
-    targetPort: http
+    - port: 8080
+      targetPort: 8080
   selector:
     app: hello-kubernetes
 ---
-apiVersion: networking.k8s.io/v1
-kind: Ingress
+apiVersion: v1
+kind: PersistentVolumeClaim
 metadata:
-  name: hello-kubernetes
-  annotations:
-    cert-manager.io/cluster-issuer: "letsencrypt"
+  name: csi-pvc
 spec:
-  tls:
-  - hosts:
-    - hello.toabi.mecodia.cloud
-    secretName: hello-kubernetes-ingress-tls
-  rules:
-    - host: "hello.toabi.mecodia.cloud"
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: hello-kubernetes
-                port:
-                  name: http
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+  storageClassName: hcloud-volumes

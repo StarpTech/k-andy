@@ -36,8 +36,7 @@ See a more detailed example with walk-through in the [example folder](./example)
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_agent_server_count"></a> [agent\_server\_count](#input\_agent\_server\_count) | n/a | `number` | `2` | no |
-| <a name="input_agent_server_type"></a> [agent\_server\_type](#input\_agent\_server\_type) | n/a | `string` | `"cx21"` | no |
+| <a name="input_agent_groups"></a> [agent\_groups](#input\_agent\_groups) | Configuration of agent groups | <pre>map(object({<br>    type      = string<br>    count     = number<br>    ip_offset = number<br>  }))</pre> | <pre>{<br>  "agent": {<br>    "count": 2,<br>    "ip_offset": 33,<br>    "type": "cx21"<br>  }<br>}</pre> | no |
 | <a name="input_control_plane_server_count"></a> [control\_plane\_server\_count](#input\_control\_plane\_server\_count) | Number of control plane nodes | `number` | `3` | no |
 | <a name="input_control_plane_server_type"></a> [control\_plane\_server\_type](#input\_control\_plane\_server\_type) | Server type of control plane servers | `string` | `"cx11"` | no |
 | <a name="input_create_kubeconfig"></a> [create\_kubeconfig](#input\_create\_kubeconfig) | Create a local kubeconfig file to connect to the cluster | `bool` | `true` | no |
@@ -69,22 +68,16 @@ See a more detailed example with walk-through in the [example folder](./example)
 ### Agent server replacement
 
 If you need to cycle an agent, you can do that with a single node following this procedure.
-Replace the number with the server you want to recreate!
-
-To make sure you have the correct ID for the node you can consult the output `agent_name_map`.
+Replace the group name and number with the server you want to recreate!
 
 Make sure you drain the nodes first. 
 
 ```shell
-terraform taint 'module.my_cluster.random_pet.agent_suffix[1]'
+terraform taint 'module.my_cluster.module.agent_group["GROUP_NAME"].random_pet.agent_suffix[1]'
 terraform apply
 ```
 
-This will recreate the agent with this pet name. If you plan to replace all the servers, you can taint all pet names using:
-
-```shell
-terraform state list | grep agent_suffix | xargs -n1 terraform taint
-```
+This will recreate the agent in that group on next apply.
 
 ### Control Plane server replacement
 

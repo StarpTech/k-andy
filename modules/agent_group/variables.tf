@@ -1,5 +1,9 @@
-variable "name" {
-  description = "Used in naming the servers"
+variable "cluster_name" {
+  description = "Cluster name (used in naming the servers)"
+}
+
+variable "group_name" {
+  description = "Name of the agent group"
 }
 
 variable "server_locations" {

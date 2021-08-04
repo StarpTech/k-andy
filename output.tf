@@ -4,7 +4,7 @@ output "control_planes_public_ips" {
 }
 
 output "agents_public_ips" {
-  value       = module.agents.public_ips
+  value       = flatten([for agents in module.agent_group : agents.public_ips])
   description = "The public IP addresses of the agent servers"
 }
 

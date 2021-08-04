@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: hello-kubernetes
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
       app: hello-kubernetes
@@ -14,39 +14,66 @@ spec:
     spec:
       containers:
       - name: hello-kubernetes
-        image: paulbouwer/hello-kubernetes:1.9
-        volumeMounts:
-        - mountPath: "/data"
-          name: my-csi-volume
+        image: paulbouwer/hello-kubernetes:1.10
         ports:
-        - containerPort: 8080
-      volumes:
-        - name: my-csi-volume
-          persistentVolumeClaim:
-            claimName: csi-pvc
+        - name: http
+          containerPort: 8080
+        livenessProbe:
+          httpGet:
+            path: /
+            port: http
+        readinessProbe:
+          httpGet:
+            path: /
+            port: http
+        env:
+        - name: KUBERNETES_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: KUBERNETES_POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: KUBERNETES_NODE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: hello-kubernetes
   annotations:
-   load-balancer.hetzner.cloud/location: nbg1
+    load-balancer.hetzner.cloud/location: nbg1
+    load-balancer.hetzner.cloud/use-private-ip: "true"
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   ports:
   - port: 8080
-    targetPort: 8080
+    targetPort: http
   selector:
     app: hello-kubernetes
 ---
-apiVersion: v1
-kind: PersistentVolumeClaim
+apiVersion: networking.k8s.io/v1
+kind: Ingress
 metadata:
-  name: csi-pvc
+  name: hello-kubernetes
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt"
 spec:
-  accessModes:
-  - ReadWriteOnce
-  resources:
-    requests:
-      storage: 10Gi
-  storageClassName: hcloud-volumes
+  tls:
+  - hosts:
+    - hello.toabi.mecodia.cloud
+    secretName: hello-kubernetes-ingress-tls
+  rules:
+    - host: "hello.toabi.mecodia.cloud"
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: hello-kubernetes
+                port:
+                  name: http

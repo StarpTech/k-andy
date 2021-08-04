@@ -15,6 +15,11 @@ variable "create_kubeconfig" {
   default     = true
 }
 
+variable "kubeconfig_filename" {
+  description = "Specify the filename of the created kubeconfig file (defaults to kubeconfig-$${var.name}.yaml"
+  default     = null
+}
+
 ## Network
 
 variable "network_cidr" {
@@ -40,13 +45,10 @@ variable "control_plane_server_type" {
 }
 
 variable "agent_server_count" {
-  description = "Number of agent nodes"
-  default     = 2
+  default = 2
 }
-
 variable "agent_server_type" {
-  description = "Server type of agent servers"
-  default     = "cx21"
+  default = "cx21"
 }
 
 variable "server_locations" {

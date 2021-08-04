@@ -15,7 +15,7 @@ locals {
 resource "local_file" "kubeconfig" {
   count             = var.create_kubeconfig ? 1 : 0
   sensitive_content = local.kubeconfig_external
-  filename          = "./kubeconfig-${var.name}.yaml"
+  filename          = var.kubeconfig_filename == null ? "./kubeconfig-${var.name}.yaml" : var.kubeconfig_filename
   file_permission   = "400"
 }
 

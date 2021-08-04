@@ -13,13 +13,32 @@ spec:
         app: hello-kubernetes
     spec:
       containers:
-      - name: hello-kubernetes
-        image: paulbouwer/hello-kubernetes:1.9
-        volumeMounts:
-        - mountPath: "/data"
-          name: my-csi-volume
-        ports:
-        - containerPort: 8080
+        - name: hello-kubernetes
+          image: paulbouwer/hello-kubernetes:1.10
+          ports:
+            - name: http
+              containerPort: 8080
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          env:
+            - name: KUBERNETES_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: KUBERNETES_POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: KUBERNETES_NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
       volumes:
         - name: my-csi-volume
           persistentVolumeClaim:
@@ -30,12 +49,12 @@ kind: Service
 metadata:
   name: hello-kubernetes
   annotations:
-   load-balancer.hetzner.cloud/location: nbg1
+    load-balancer.hetzner.cloud/location: nbg1
 spec:
   type: LoadBalancer
   ports:
-  - port: 8080
-    targetPort: 8080
+    - port: 8080
+      targetPort: 8080
   selector:
     app: hello-kubernetes
 ---
@@ -45,7 +64,7 @@ metadata:
   name: csi-pvc
 spec:
   accessModes:
-  - ReadWriteOnce
+    - ReadWriteOnce
   resources:
     requests:
       storage: 10Gi

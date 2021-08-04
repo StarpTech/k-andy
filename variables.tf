@@ -15,6 +15,11 @@ variable "create_kubeconfig" {
   default     = true
 }
 
+variable "kubeconfig_filename" {
+  description = "Specify the filename of the created kubeconfig file (defaults to kubeconfig-$${var.name}.yaml"
+  default     = null
+}
+
 ## Network
 
 variable "network_cidr" {
@@ -39,19 +44,25 @@ variable "control_plane_server_type" {
   default     = "cx11"
 }
 
-variable "agent_server_count" {
-  description = "Number of agent nodes"
-  default     = 2
-}
-
-variable "agent_server_type" {
-  description = "Server type of agent servers"
-  default     = "cx21"
-}
-
 variable "server_locations" {
   description = "Server locations in which servers will be distributed"
   default     = ["nbg1", "fsn1", "hel1"]
+}
+
+variable "agent_groups" {
+  description = "Configuration of agent groups"
+  default = {
+    "default" = {
+      type      = "cx21"
+      count     = 2
+      ip_offset = 33
+    }
+  }
+  type = map(object({
+    type      = string
+    count     = number
+    ip_offset = number
+  }))
 }
 
 ## Server Configuration

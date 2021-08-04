@@ -1,63 +1,29 @@
-resource "random_pet" "agent_suffix" {
-  count = var.agent_server_count
-}
+module "agent_group" {
+  for_each = var.agent_groups
 
-locals {
-  agent_pet_names = [for pet in random_pet.agent_suffix : pet.id]
-  agent_name_map  = { for i in range(0, var.agent_server_count) : random_pet.agent_suffix[i].id => i }
-}
+  source = "./modules/agent_group"
 
-resource "hcloud_server" "agent" {
-  for_each = { for i in range(0, var.agent_server_count) : "#${i}" => i }
-  name     = "${var.name}-agent-${local.agent_pet_names[each.value]}"
+  k3s_cluster_secret = random_password.k3s_cluster_secret.result
+  k3s_version        = var.k3s_version
 
-  image       = data.hcloud_image.ubuntu.name
-  server_type = var.agent_server_type
-  location    = element(var.server_locations, each.value)
+  cluster_name = var.name
+  group_name   = each.key
 
-  ssh_keys = [hcloud_ssh_key.provision_public.id]
-  labels = merge({
-    node_type = "worker"
-  }, local.common_labels)
+  server_locations = var.server_locations
 
-  # Join cluster as agent after first boot
-  # Adding the random pet name as comment is a trick to recreate the server on pet-name change
-  user_data = format("%s\n#%s\n%s", "#cloud-config", local.agent_pet_names[each.value], yamlencode(
-    {
-      runcmd = [
-        "curl -sfL https://get.k3s.io | K3S_URL='https://${local.first_control_plane_ip}:6443' INSTALL_K3S_VERSION='${var.k3s_version}' K3S_TOKEN='${random_password.k3s_cluster_secret.result}' sh -s - agent --kubelet-arg='cloud-provider=external'"
-      ]
-      packages = var.server_additional_packages
-    }
-  ))
+  provisioning_ssh_key_id = hcloud_ssh_key.provision_public.id
+  ssh_private_key         = local.ssh_private_key
 
-  network {
-    network_id = hcloud_network.k3s.id
-    ip         = cidrhost(hcloud_network_subnet.k3s_nodes.ip_range, 33 + each.value)
-  }
+  control_plane_ip = local.first_control_plane_ip
+  network_id       = hcloud_network.k3s.id
 
-  depends_on = [
-    # Control plane server must be created before the worker node can be attached
-    hcloud_server.first_control_plane
-  ]
+  subnet_id       = hcloud_network_subnet.k3s_nodes.id
+  subnet_ip_range = hcloud_network_subnet.k3s_nodes.ip_range
 
-  provisioner "remote-exec" {
-    inline = [
-      "until systemctl is-active --quiet k3s-agent.service; do sleep 1; done"
-    ]
+  ip_offset = each.value.ip_offset
 
-    connection {
-      host        = self.ipv4_address
-      type        = "ssh"
-      user        = "root"
-      private_key = local.ssh_private_key
-    }
-  }
-}
+  server_count = each.value.count
+  server_type  = each.value.type
 
-resource "hcloud_server_network" "agent" {
-  for_each  = { for i in range(0, var.agent_server_count) : "#${i}" => i }
-  subnet_id = hcloud_network_subnet.k3s_nodes.id
-  server_id = hcloud_server.agent[each.key].id
-  ip        = cidrhost(hcloud_network_subnet.k3s_nodes.ip_range, 33 + each.value) // start at x.y.z.33
+  depends_on = [hcloud_server.first_control_plane]
 }

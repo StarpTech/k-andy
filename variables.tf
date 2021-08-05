@@ -47,6 +47,7 @@ variable "control_plane_server_type" {
 variable "server_locations" {
   description = "Server locations in which servers will be distributed"
   default     = ["nbg1", "fsn1", "hel1"]
+  type        = list(string)
 }
 
 variable "agent_groups" {

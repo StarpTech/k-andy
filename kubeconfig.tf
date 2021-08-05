@@ -38,4 +38,5 @@ output "kubeconfig_file" {
 output "kubeconfig" {
   description = "Structured kubeconfig data to supply to other providers"
   value       = local.kubeconfig_data
+  sensitive   = true
 }

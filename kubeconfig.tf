@@ -19,8 +19,24 @@ resource "local_file" "kubeconfig" {
   file_permission   = "400"
 }
 
-output "kubeconfig" {
+locals {
+  kubeconfig_parsed = yamldecode(local.kubeconfig_external)
+  kubeconfig_data = {
+    host                   = local.kubeconfig_parsed["clusters"][0]["cluster"]["server"]
+    client_certificate     = base64decode(local.kubeconfig_parsed["users"][0]["user"]["client-certificate-data"])
+    client_key             = base64decode(local.kubeconfig_parsed["users"][0]["user"]["client-key-data"])
+    cluster_ca_certificate = base64decode(local.kubeconfig_parsed["clusters"][0]["cluster"]["certificate-authority-data"])
+  }
+}
+
+output "kubeconfig_file" {
   value       = local.kubeconfig_external
-  description = "Kubeconfig with external IP address"
+  description = "Kubeconfig file content with external IP address"
+  sensitive   = true
+}
+
+output "kubeconfig" {
+  description = "Structured kubeconfig data to supply to other providers"
+  value       = local.kubeconfig_data
   sensitive   = true
 }

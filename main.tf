@@ -12,3 +12,8 @@ resource "hcloud_ssh_key" "provision_public" {
 data "hcloud_image" "ubuntu" {
   name = "ubuntu-20.04"
 }
+
+locals {
+  server_base_packages = ["wireguard"]
+  k3s_setup_args       = "--disable local-storage --disable-cloud-controller --disable traefik --disable servicelb --flannel-backend=wireguard --kubelet-arg='cloud-provider=external'"
+}

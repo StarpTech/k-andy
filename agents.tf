@@ -25,7 +25,7 @@ module "agent_group" {
   server_count = each.value.count
   server_type  = each.value.type
 
-  additional_packages = var.server_additional_packages
+  additional_packages = concat(local.server_base_packages, var.server_additional_packages)
 
   depends_on = [hcloud_server.first_control_plane]
 }

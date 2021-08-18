@@ -27,7 +27,7 @@ resource "hcloud_server" "first_control_plane" {
       "kubectl taint node ${self.name} node-role.kubernetes.io/master=true:NoSchedule",
       "kubectl taint node ${self.name} CriticalAddonsOnly=true:NoExecute",
       # Install hetzner CCM
-      "kubectl -n kube-system create secret generic hcloud --from-literal=token=${var.hcloud_token} --from-literal=network=${hcloud_network.k3s.name}",
+      "kubectl -n kube-system create secret generic hcloud --from-literal=token=${var.hcloud_token} --from-literal=network=${local.network_name}",
       "kubectl apply -f -<<EOF\n${data.template_file.ccm_manifest.rendered}\nEOF",
       # Install hetzner CSI plugin
       "kubectl -n kube-system create secret generic hcloud-csi --from-literal=token=${var.hcloud_token}",

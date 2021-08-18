@@ -23,8 +23,23 @@ variable "kubeconfig_filename" {
 ## Network
 
 variable "network_cidr" {
-  description = "Network in which the cluster will be placed"
+  description = "Network in which the cluster will be placed. Ignored if network_id is defined"
   default     = "10.0.0.0/16"
+}
+
+variable "cluster_cidr" {
+  description = "Network CIDR to use for pod IPs"
+  default     = "10.42.0.0/16"
+}
+
+variable "service_cidr" {
+  description = "Network CIDR to use for services IPs"
+  default     = "10.43.0.0/16"
+}
+
+variable "network_id" {
+  description = "If specified, no new network will be created. Make sure cluster_cidr and service_cidr don't collide with anything in the existing network."
+  default     = null
 }
 
 variable "subnet_cidr" {

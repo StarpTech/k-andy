@@ -22,7 +22,7 @@ resource "hcloud_server" "control_plane" {
   ))
 
   network {
-    network_id = hcloud_network.k3s.id
+    network_id = local.network_id
     ip         = cidrhost(hcloud_network_subnet.k3s_nodes.ip_range, each.value + 1)
   }
 

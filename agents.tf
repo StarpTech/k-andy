@@ -15,7 +15,7 @@ module "agent_group" {
   ssh_private_key         = local.ssh_private_key
 
   control_plane_ip = local.first_control_plane_ip
-  network_id       = hcloud_network.k3s.id
+  network_id       = local.network_id
 
   subnet_id       = hcloud_network_subnet.k3s_nodes.id
   subnet_ip_range = hcloud_network_subnet.k3s_nodes.ip_range

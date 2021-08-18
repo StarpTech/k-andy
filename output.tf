@@ -21,5 +21,5 @@ output "k3s_token" {
 }
 
 output "network_id" {
-  value = hcloud_network.k3s.id
+  value = local.network_id
 }

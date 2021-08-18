@@ -36,4 +36,3 @@ output "server_locations" {
   description = "Array of hetzner server locations we deploy to"
   value       = var.server_locations
 }
-

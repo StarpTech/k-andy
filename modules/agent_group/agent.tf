@@ -9,6 +9,7 @@ resource "hcloud_server" "agent" {
   ssh_keys = [var.provisioning_ssh_key_id]
   labels = merge({
     node_type = "worker"
+    cluster   = var.cluster_name
   }, var.common_labels)
 
   # Join cluster as agent after first boot

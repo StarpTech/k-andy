@@ -59,12 +59,14 @@ See a more detailed example with walk-through in the [example folder](./example)
 | Name | Description |
 |------|-------------|
 | <a name="output_agents_public_ips"></a> [agents\_public\_ips](#output\_agents\_public\_ips) | The public IP addresses of the agent servers |
+| <a name="output_cidr_block"></a> [cidr\_block](#output\_cidr\_block) | n/a |
 | <a name="output_control_planes_public_ips"></a> [control\_planes\_public\_ips](#output\_control\_planes\_public\_ips) | The public IP addresses of the control plane servers |
 | <a name="output_k3s_token"></a> [k3s\_token](#output\_k3s\_token) | Secret k3s authentication token |
 | <a name="output_kubeconfig"></a> [kubeconfig](#output\_kubeconfig) | Structured kubeconfig data to supply to other providers |
 | <a name="output_kubeconfig_file"></a> [kubeconfig\_file](#output\_kubeconfig\_file) | Kubeconfig file content with external IP address |
 | <a name="output_network_id"></a> [network\_id](#output\_network\_id) | n/a |
 | <a name="output_ssh_private_key"></a> [ssh\_private\_key](#output\_ssh\_private\_key) | Key to SSH into nodes |
+| <a name="output_subnet_id"></a> [subnet\_id](#output\_subnet\_id) | n/a |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 
 ## Common Operations

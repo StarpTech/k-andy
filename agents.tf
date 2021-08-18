@@ -22,8 +22,9 @@ module "agent_group" {
 
   ip_offset = each.value.ip_offset
 
-  server_count = each.value.count
-  server_type  = each.value.type
+  server_count  = each.value.count
+  server_type   = each.value.type
+  common_labels = local.common_labels
 
   additional_packages = concat(local.server_base_packages, var.server_additional_packages)
 

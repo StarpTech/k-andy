@@ -65,6 +65,7 @@ See a more detailed example with walk-through in the [example folder](./example)
 | <a name="output_kubeconfig"></a> [kubeconfig](#output\_kubeconfig) | Structured kubeconfig data to supply to other providers |
 | <a name="output_kubeconfig_file"></a> [kubeconfig\_file](#output\_kubeconfig\_file) | Kubeconfig file content with external IP address |
 | <a name="output_network_id"></a> [network\_id](#output\_network\_id) | n/a |
+| <a name="output_server_locations"></a> [server\_locations](#output\_server\_locations) | Array of hetzner server locations we deploy to |
 | <a name="output_ssh_private_key"></a> [ssh\_private\_key](#output\_ssh\_private\_key) | Key to SSH into nodes |
 | <a name="output_subnet_id"></a> [subnet\_id](#output\_subnet\_id) | n/a |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

@@ -32,16 +32,21 @@ variable "control_plane_ip" {
   description = "Control plane IP to connect to"
 }
 
+variable "public_control_plane_ip" {
+  description = "Public control plane IP"
+}
+
+variable "taints" {
+  description = "Taints each worker gets"
+}
 
 variable "k3s_version" {
   description = "K3S version, should match the control plane"
 }
 
-
 variable "k3s_cluster_secret" {
   description = "K3S cluster token to authenticate against control plane"
 }
-
 
 variable "network_id" {
   description = "Network ID to place agents in"

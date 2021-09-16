@@ -72,12 +72,14 @@ variable "agent_groups" {
       type      = "cx21"
       count     = 2
       ip_offset = 33
+      taints    = []
     }
   }
   type = map(object({
     type      = string
     count     = number
     ip_offset = number
+    taints    = list(string)
   }))
 }
 

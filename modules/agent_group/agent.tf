@@ -17,7 +17,7 @@ resource "hcloud_server" "agent" {
   user_data = format("%s\n#%s\n%s", "#cloud-config", local.agent_pet_names[each.value], yamlencode(
     {
       runcmd = [
-        "curl -sfL https://get.k3s.io | K3S_URL='https://${var.control_plane_ip}:6443' INSTALL_K3S_VERSION='${var.k3s_version}' K3S_TOKEN='${var.k3s_cluster_secret}' sh -s - agent --kubelet-arg='cloud-provider=external'"
+        "curl -sfL https://get.k3s.io | K3S_URL='https://${var.control_plane_ip}:6443' INSTALL_K3S_VERSION='${var.k3s_version}' K3S_TOKEN='${var.k3s_cluster_secret}' sh -s - agent --kubelet-arg='cloud-provider=external' --kubelet-arg='node-labels=agent-group=${var.group_name}'"
       ]
       packages = var.additional_packages
     }
@@ -47,4 +47,25 @@ resource "hcloud_server_network" "agent" {
   subnet_id = var.subnet_id
   server_id = hcloud_server.agent[each.key].id
   ip        = cidrhost(var.subnet_ip_range, var.ip_offset + each.value) // start at x.y.z.OFFSET
+}
+
+resource "null_resource" "apply_taints" {
+  count = length(var.taints) > 0 ? 1 : 0
+
+  triggers = {
+    agent_ids = join(",", [for _, agent in hcloud_server.agent : agent.id]),
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      for taint in var.taints : "kubectl taint nodes -l agent-group=${var.group_name} ${taint}"
+    ]
+  }
+
+  connection {
+    host        = var.public_control_plane_ip
+    type        = "ssh"
+    user        = "root"
+    private_key = var.ssh_private_key
+  }
 }

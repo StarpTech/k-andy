@@ -107,7 +107,7 @@ variable "k3s_version" {
 }
 
 variable "hcloud_csi_driver_version" {
-  default = "v1.5.3"
+  default = "v1.6.0"
 }
 
 # Labels

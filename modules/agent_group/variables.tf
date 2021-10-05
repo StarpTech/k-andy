@@ -38,6 +38,7 @@ variable "public_control_plane_ip" {
 
 variable "taints" {
   description = "Taints each worker gets"
+  type        = list(string)
 }
 
 variable "k3s_version" {

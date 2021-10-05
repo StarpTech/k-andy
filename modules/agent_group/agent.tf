@@ -54,11 +54,12 @@ resource "null_resource" "apply_taints" {
 
   triggers = {
     agent_ids = join(",", [for _, agent in hcloud_server.agent : agent.id]),
+    taints    = join(",", var.taints)
   }
 
   provisioner "remote-exec" {
     inline = [
-      for taint in var.taints : "kubectl taint nodes -l agent-group=${var.group_name} ${taint}"
+      for taint in var.taints : "kubectl taint nodes --overwrite -l agent-group=${var.group_name} ${taint}"
     ]
   }
 

@@ -21,7 +21,18 @@ This [terraform](https://www.terraform.io/) module will install a High Availabil
 
 **Auto-K3s-Upgrades**
 
-We provide an example how to upgrade your K3s node and agents with the [system-upgrade-controller](https://github.com/rancher/system-upgrade-controller). Check out [/upgrade](./upgrade)
+Enable the upgrade-controller (`enable_upgrade_controller = true`) and specify your target k3s version (`upgrade_k3s_target_version`). See [here](https://github.com/k3s-io/k3s/releases) for possible versions.
+
+Label the nodes you want to upgrade, e.g. `kubectl label nodes core-control-plane-1 k3s-upgrade=true`. The concurrency 
+of the upgrade plan is set to 1, so you can also label them all at once.  Agent nodes will be drained one by one during 
+the upgrade.
+
+You can label all control-plane nodes by using `kubectl label nodes -l node-role.kubernetes.io/control-plane=true k3s-upgrade=true`.
+All agent nodes can be labelled using `kubectl label nodes -l node-role.kubernetes.io/control-plane=true k3s-upgrade!=true`.
+
+To remove the label from all nodes you can run `kubectl label nodes --all k3s-upgrade-`.
+
+After a successful update you can also remove the upgrade controller and the plans again, setting `enable_upgrade_controller` to `false`.
 
 **What is K3s?**
 
@@ -41,6 +52,7 @@ See a more detailed example with walk-through in the [example folder](./example)
 | <a name="input_control_plane_server_count"></a> [control\_plane\_server\_count](#input\_control\_plane\_server\_count) | Number of control plane nodes | `number` | `3` | no |
 | <a name="input_control_plane_server_type"></a> [control\_plane\_server\_type](#input\_control\_plane\_server\_type) | Server type of control plane servers | `string` | `"cx11"` | no |
 | <a name="input_create_kubeconfig"></a> [create\_kubeconfig](#input\_create\_kubeconfig) | Create a local kubeconfig file to connect to the cluster | `bool` | `true` | no |
+| <a name="input_enable_upgrade_controller"></a> [enable\_upgrade\_controller](#input\_enable\_upgrade\_controller) | Install the rancher system-upgrade-controller | `bool` | `false` | no |
 | <a name="input_hcloud_csi_driver_version"></a> [hcloud\_csi\_driver\_version](#input\_hcloud\_csi\_driver\_version) | n/a | `string` | `"v1.6.0"` | no |
 | <a name="input_hcloud_token"></a> [hcloud\_token](#input\_hcloud\_token) | Token to authenticate against Hetzner Cloud | `any` | n/a | yes |
 | <a name="input_k3s_version"></a> [k3s\_version](#input\_k3s\_version) | K3s version | `string` | `"v1.21.3+k3s1"` | no |
@@ -53,6 +65,9 @@ See a more detailed example with walk-through in the [example folder](./example)
 | <a name="input_service_cidr"></a> [service\_cidr](#input\_service\_cidr) | Network CIDR to use for services IPs | `string` | `"10.43.0.0/16"` | no |
 | <a name="input_ssh_private_key_location"></a> [ssh\_private\_key\_location](#input\_ssh\_private\_key\_location) | Use this private SSH key instead of generating a new one (Attention: Encrypted keys are not supported) | `string` | `null` | no |
 | <a name="input_subnet_cidr"></a> [subnet\_cidr](#input\_subnet\_cidr) | Subnet in which all nodes are placed | `string` | `"10.0.1.0/24"` | no |
+| <a name="input_upgrade_controller_image_tag"></a> [upgrade\_controller\_image\_tag](#input\_upgrade\_controller\_image\_tag) | The image tag of the upgrade controller (See https://github.com/rancher/system-upgrade-controller/releases) | `string` | `"v0.8.0"` | no |
+| <a name="input_upgrade_k3s_target_version"></a> [upgrade\_k3s\_target\_version](#input\_upgrade\_k3s\_target\_version) | Target version of k3s (See https://github.com/k3s-io/k3s/releases) | `string` | `null` | no |
+| <a name="input_upgrade_node_additional_tolerations"></a> [upgrade\_node\_additional\_tolerations](#input\_upgrade\_node\_additional\_tolerations) | List of tolerations which upgrade jobs must have to run on every node (for control-plane and agents) | `list(map(any))` | `[]` | no |
 
 ### Outputs
 

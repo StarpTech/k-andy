@@ -110,6 +110,30 @@ variable "hcloud_csi_driver_version" {
   default = "v1.6.0"
 }
 
+## Upgrade Controller
+
+variable "enable_upgrade_controller" {
+  description = "Install the rancher system-upgrade-controller"
+  default     = false
+}
+
+variable "upgrade_controller_image_tag" {
+  description = "The image tag of the upgrade controller (See https://github.com/rancher/system-upgrade-controller/releases)"
+  default     = "v0.8.0"
+}
+
+variable "upgrade_k3s_target_version" {
+  description = "Target version of k3s (See https://github.com/k3s-io/k3s/releases)"
+  type        = string
+  default     = null
+}
+
+variable "upgrade_node_additional_tolerations" {
+  description = "List of tolerations which upgrade jobs must have to run on every node (for control-plane and agents)"
+  default     = []
+  type        = list(map(any))
+}
+
 # Labels
 
 locals {

@@ -6,7 +6,11 @@ terraform {
     }
     remotefile = {
       source  = "mabunixda/remotefile"
-      version = "0.1.1"
+      version = "~> 0.1.1"
+    }
+    kubectl = {
+      source  = "gavinbunney/kubectl"
+      version = "~> 1.13"
     }
   }
   required_version = ">= 0.13"

@@ -55,6 +55,10 @@ resource "null_resource" "apply_taints" {
   triggers = {
     agent_ids = join(",", [for _, agent in hcloud_server.agent : agent.id]),
     taints    = join(",", var.taints)
+    # This a workaround, because sometimes taints are missed on initial creation or get lost
+    # Best would be to check if current taints did change, but that would need an
+    # external datasource which is "ugly".
+    last_updated = timestamp()
   }
 
   provisioner "remote-exec" {

@@ -163,10 +163,6 @@ Cloud init logs can be found on the remote machines in:
 - `journalctl -u k3s.service -e` last logs of the server
 - `journalctl -u k3s-agent.service -e` last logs of the agent
 
-## Known issues
-
-- Sometimes at cluster bootstrapping the Cloud-Controllers reports that some routes couldn't be created. This issue was fixed in master but wasn't released yet. Restart the cloud-controller pod and it will recreate them.
-
 ## Credits
 
 - [terraform-hcloud-k3s](https://github.com/cicdteam/terraform-hcloud-k3s) Terraform module which creates a single node cluster.

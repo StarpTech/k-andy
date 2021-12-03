@@ -140,9 +140,9 @@ sudo systemctl stop k3s
   --cluster-reset-restore-path=<PATH-TO-SNAPSHOT>
 ```
 
-**Warning:** This forget all peers and the server becomes the sole member of a new cluster. You have to manually rejoin all servers.
+> **Warning:** This forget all peers and the server becomes the sole member of a new cluster. You have to manually rejoin all servers.
 
-3. Connect you with the different servers backup and delete `/var/lib/rancher/k3s/server/db` on each peer etcd server and rejoin the nodes.
+3. Connect you with the different servers. Backup and delete `/var/lib/rancher/k3s/server/db` on each server.
 
 ```sh
 sudo systemctl stop k3s
@@ -150,9 +150,9 @@ rm -rf /var/lib/rancher/k3s/server/db
 sudo systemctl start k3s
 ```
 
-This will rejoin the server with the master server and seed the etcd store.
+This will rejoin the server one after another. After some time, all servers should be in sync again. Run `kubectl get node` to verify it.
 
-**Info:** It exists no official tool to automate the procedure. In future, rancher might provide an operator to handle this ([issue](https://github.com/k3s-io/k3s/issues/3174)).
+> **Info:** It exists no official tool to automate the procedure. In future, rancher might provide an operator to handle this ([issue](https://github.com/k3s-io/k3s/issues/3174)).
 
 ## Debugging
 

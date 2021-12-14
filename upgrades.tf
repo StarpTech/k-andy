@@ -1,5 +1,6 @@
 data "kubectl_file_documents" "upgrade_controller" {
   content = var.enable_upgrade_controller ? templatefile("${path.module}/manifests/upgrade-controller.yaml", {
+    kubectl_image_tag            = var.upgrade_controller_kubectl_image_tag
     upgrade_controller_image_tag = var.upgrade_controller_image_tag
   }) : ""
 }

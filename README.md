@@ -28,7 +28,7 @@ of the upgrade plan is set to 1, so you can also label them all at once.  Agent 
 the upgrade.
 
 You can label all control-plane nodes by using `kubectl label nodes -l node-role.kubernetes.io/control-plane=true k3s-upgrade=true`.
-All agent nodes can be labelled using `kubectl label nodes -l node-role.kubernetes.io/control-plane=true k3s-upgrade!=true`.
+All agent nodes can be labelled using `kubectl label nodes -l !node-role.kubernetes.io/control-plane k3s-upgrade=true`.
 
 To remove the label from all nodes you can run `kubectl label nodes --all k3s-upgrade-`.
 
@@ -66,6 +66,7 @@ See a more detailed example with walk-through in the [example folder](./example)
 | <a name="input_ssh_private_key_location"></a> [ssh\_private\_key\_location](#input\_ssh\_private\_key\_location) | Use this private SSH key instead of generating a new one (Attention: Encrypted keys are not supported) | `string` | `null` | no |
 | <a name="input_subnet_cidr"></a> [subnet\_cidr](#input\_subnet\_cidr) | Subnet in which all nodes are placed | `string` | `"10.0.1.0/24"` | no |
 | <a name="input_upgrade_controller_image_tag"></a> [upgrade\_controller\_image\_tag](#input\_upgrade\_controller\_image\_tag) | The image tag of the upgrade controller (See https://github.com/rancher/system-upgrade-controller/releases) | `string` | `"v0.8.0"` | no |
+| <a name="input_upgrade_controller_kubectl_image_tag"></a> [upgrade\_controller\_kubectl\_image\_tag](#input\_upgrade\_controller\_kubectl\_image\_tag) | rancher/kubectl image tag | `string` | `"v1.21.5"` | no |
 | <a name="input_upgrade_k3s_target_version"></a> [upgrade\_k3s\_target\_version](#input\_upgrade\_k3s\_target\_version) | Target version of k3s (See https://github.com/k3s-io/k3s/releases) | `string` | `null` | no |
 | <a name="input_upgrade_node_additional_tolerations"></a> [upgrade\_node\_additional\_tolerations](#input\_upgrade\_node\_additional\_tolerations) | List of tolerations which upgrade jobs must have to run on every node (for control-plane and agents) | `list(map(any))` | `[]` | no |
 

@@ -122,6 +122,11 @@ variable "upgrade_controller_image_tag" {
   default     = "v0.8.0"
 }
 
+variable "upgrade_controller_kubectl_image_tag" {
+  default     = "v1.21.5"
+  description = "rancher/kubectl image tag"
+}
+
 variable "upgrade_k3s_target_version" {
   description = "Target version of k3s (See https://github.com/k3s-io/k3s/releases)"
   type        = string

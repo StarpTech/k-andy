@@ -1,15 +1,15 @@
-data "remotefile" "kubeconfig" {
+data "remote_file" "kubeconfig" {
   conn {
     host        = hcloud_server.first_control_plane.ipv4_address
     port        = 22
-    username    = "root"
+    user        = "root"
     private_key = local.ssh_private_key
   }
   path = "/etc/rancher/k3s/k3s.yaml"
 }
 
 locals {
-  kubeconfig_external = replace(data.remotefile.kubeconfig.content, "127.0.0.1", hcloud_server.first_control_plane.ipv4_address)
+  kubeconfig_external = replace(data.remote_file.kubeconfig.content, "127.0.0.1", hcloud_server.first_control_plane.ipv4_address)
 }
 
 resource "local_file" "kubeconfig" {

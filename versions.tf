@@ -4,13 +4,13 @@ terraform {
       source  = "hetznercloud/hcloud"
       version = "~> 1.27"
     }
-    remotefile = {
-      source  = "mabunixda/remotefile"
-      version = "~> 0.1.1"
-    }
     kubectl = {
       source  = "gavinbunney/kubectl"
       version = "~> 1.13"
+    }
+    remote = {
+      source  = "tenstad/remote"
+      version = "~> 0.0.23"
     }
   }
   required_version = ">= 0.13"

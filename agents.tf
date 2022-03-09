@@ -16,7 +16,7 @@ module "agent_group" {
   provisioning_ssh_key_id = hcloud_ssh_key.provision_public.id
   ssh_private_key         = local.ssh_private_key
 
-  control_plane_ip        = local.first_control_plane_ip
+  control_plane_ip        = local.primary_control_plane_ip
   network_id              = local.network_id
   public_control_plane_ip = hcloud_server.first_control_plane.ipv4_address
 

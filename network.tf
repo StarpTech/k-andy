@@ -11,9 +11,9 @@ data "hcloud_network" "k3s" {
 }
 
 locals {
-  first_control_plane_ip = cidrhost(hcloud_network_subnet.k3s_nodes.ip_range, 1)
-  network_id             = var.network_id == null ? hcloud_network.k3s[0].id : var.network_id
-  network_name           = var.network_id == null ? hcloud_network.k3s[0].name : data.hcloud_network.k3s[0].name
+  network_id               = var.network_id == null ? hcloud_network.k3s[0].id : var.network_id
+  network_name             = var.network_id == null ? hcloud_network.k3s[0].name : data.hcloud_network.k3s[0].name
+  primary_control_plane_ip = cidrhost(hcloud_network_subnet.k3s_nodes.ip_range, var.control_plane_primary_index)
 }
 
 resource "hcloud_network_subnet" "k3s_nodes" {

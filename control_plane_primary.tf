@@ -13,7 +13,7 @@ resource "hcloud_server" "first_control_plane" {
   user_data = format("%s\n%s", "#cloud-config", yamlencode(
     {
       runcmd = [
-        "curl -sfL https://get.k3s.io | K3S_TOKEN='${random_password.k3s_cluster_secret.result}' INSTALL_K3S_VERSION='${var.k3s_version}' sh -s - server --cluster-init ${local.k3s_setup_args}"
+        "curl -sfL https://get.k3s.io | K3S_TOKEN='${random_password.k3s_cluster_secret.result}' INSTALL_K3S_VERSION='${var.k3s_version}' ${var.control_plane_already_initialized ? local.k3s_server_join_cmd : local.k3s_server_init_cmd}"
       ]
       packages = concat(local.server_base_packages, var.server_additional_packages)
     }
@@ -42,10 +42,15 @@ resource "hcloud_server" "first_control_plane" {
     }
   }
 
+  // Otherwise we would be in a case where this would always be recreated because we switch the primary control plane IP
+  lifecycle {
+    ignore_changes = [user_data]
+  }
+
 }
 
 resource "hcloud_server_network" "first_control_plane" {
   subnet_id = hcloud_network_subnet.k3s_nodes.id
   server_id = hcloud_server.first_control_plane.id
-  ip        = local.first_control_plane_ip
+  ip        = local.primary_control_plane_ip
 }

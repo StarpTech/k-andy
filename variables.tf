@@ -48,6 +48,15 @@ variable "subnet_cidr" {
 }
 
 ## Servers
+variable "control_plane_primary_index" {
+  description = "Which of the servers should be the primary to connect to? If you change it from 1, also set `control_plane_already_initialized` to true. (1-indexed!)"
+  default     = 1
+}
+
+variable "control_plane_already_initialized" {
+  description = "Use this if you have to replace the first control plane and want the primary to join other already existing ones and not do an init anymore. You have to update `control_plane_primary_index` to something else too."
+  default     = false
+}
 
 variable "control_plane_server_count" {
   description = "Number of control plane nodes"

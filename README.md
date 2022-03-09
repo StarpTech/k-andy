@@ -49,6 +49,8 @@ See a more detailed example with walk-through in the [example folder](./example)
 |------|-------------|------|---------|:--------:|
 | <a name="input_agent_groups"></a> [agent\_groups](#input\_agent\_groups) | Configuration of agent groups | <pre>map(object({<br>    type      = string<br>    count     = number<br>    ip_offset = number<br>    taints    = list(string)<br>  }))</pre> | <pre>{<br>  "default": {<br>    "count": 2,<br>    "ip_offset": 33,<br>    "taints": [],<br>    "type": "cx21"<br>  }<br>}</pre> | no |
 | <a name="input_cluster_cidr"></a> [cluster\_cidr](#input\_cluster\_cidr) | Network CIDR to use for pod IPs | `string` | `"10.42.0.0/16"` | no |
+| <a name="input_control_plane_already_initialized"></a> [control\_plane\_already\_initialized](#input\_control\_plane\_already\_initialized) | Use this if you have to replace the first control plane and want the primary to join other already existing ones and not do an init anymore. You have to update `control_plane_primary_index` to something else too. | `bool` | `false` | no |
+| <a name="input_control_plane_primary_index"></a> [control\_plane\_primary\_index](#input\_control\_plane\_primary\_index) | Which of the servers should be the primary to connect to? If you change it from 1, also set `control_plane_already_initialized` to true. (1-indexed!) | `number` | `1` | no |
 | <a name="input_control_plane_server_count"></a> [control\_plane\_server\_count](#input\_control\_plane\_server\_count) | Number of control plane nodes | `number` | `3` | no |
 | <a name="input_control_plane_server_type"></a> [control\_plane\_server\_type](#input\_control\_plane\_server\_type) | Server type of control plane servers | `string` | `"cx11"` | no |
 | <a name="input_create_kubeconfig"></a> [create\_kubeconfig](#input\_create\_kubeconfig) | Create a local kubeconfig file to connect to the cluster | `bool` | `true` | no |
@@ -88,7 +90,7 @@ See a more detailed example with walk-through in the [example folder](./example)
 
 ## Common Operations
 
-### Agent server replacement
+### Agent server replacement (common case)
 
 If you need to cycle an agent, you can do that with a single node following this procedure.
 Replace the group name and number with the server you want to recreate!
@@ -96,15 +98,42 @@ Replace the group name and number with the server you want to recreate!
 Make sure you drain the nodes first. 
 
 ```shell
+kubectl drain that-agent
 terraform taint 'module.my_cluster.module.agent_group["GROUP_NAME"].random_pet.agent_suffix[1]'
 terraform apply
 ```
 
 This will recreate the agent in that group on next apply.
 
+### Sophisticated agent server replacement
+
+If you did some weird config change or recreate them by changing the base k3s version in the terraform configuration and
+terraform wants to replace all your agents at once you can do this. Replacing all by one is probably not a good idea.
+
+Example for replacement of one agent (the first one of that group):
+
+```shell
+kubectl drain that-agent
+terragrunt taint 'module.agent_group["GROUP_NAME"].random_pet.agent_suffix[0]'
+terraform apply --target='module.agent_group["GROUP_NAME"].hcloud_server.agent["#0"]' --target='module.agent_group["GROUP_NAME"].hcloud_server_network.agent["#0"]' --target='module.agent_group["GROUP_NAME"].random_pet.agent_suffix[0]'
+```
+
 ### Control Plane server replacement
 
-Currently you should only replace the servers which didn't initialize the cluster.
+Control plane servers do not get recreated when the user-data for cloud-init changes. If you want to recreate one after
+you changed something which would change the cloud-init you need to taint them.
+
+#### Primary server
+
+If you for some reason need to replace the primary control plane, you'll need to tell it to join the others.
+
+Set the variable `control_plane_primary_index` to one of the other control plane nodes (e.g. 2 or 3).
+Also set `control_plane_already_initialized` to `true` so it won't run a `cluster-init` again. This will make the primary
+connect to control-plane 2 or 3 after recreation.
+
+#### Secondary servers
+
+This is how you can replace the servers which didn't initialize the cluster.
 
 ```shell
 terraform taint 'module.my_cluster.hcloud_server.control_plane["#1"]'

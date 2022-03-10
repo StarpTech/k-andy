@@ -15,14 +15,14 @@ resource "hcloud_server" "control_plane" {
   user_data = format("%s\n%s", "#cloud-config", yamlencode(
     {
       runcmd = [
-        "curl -sfL https://get.k3s.io | K3S_TOKEN='${random_password.k3s_cluster_secret.result}' INSTALL_K3S_VERSION='${var.k3s_version}' sh -s - server --server 'https://${local.first_control_plane_ip}:6443' --disable local-storage --disable-cloud-controller --disable traefik --disable servicelb --kubelet-arg='cloud-provider=external'"
+        "curl -sfL https://get.k3s.io | K3S_TOKEN='${random_password.k3s_cluster_secret.result}' INSTALL_K3S_VERSION='${var.k3s_version}' ${local.k3s_server_join_cmd}"
       ]
-      packages = var.server_additional_packages
+      packages = concat(local.server_base_packages, var.server_additional_packages)
     }
   ))
 
   network {
-    network_id = hcloud_network.k3s.id
+    network_id = local.network_id
     ip         = cidrhost(hcloud_network_subnet.k3s_nodes.ip_range, each.value + 1)
   }
 
@@ -41,6 +41,11 @@ resource "hcloud_server" "control_plane" {
       user        = "root"
       private_key = local.ssh_private_key
     }
+  }
+
+  // Otherwise we would be in a case where this would always be recreated because we switch the primary control plane IP
+  lifecycle {
+    ignore_changes = [user_data]
   }
 
   depends_on = [

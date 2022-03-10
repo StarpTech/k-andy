@@ -11,7 +11,7 @@ Our `.envrc` here looks like this:
 
 ```shell
 export TF_VAR_hcloud_token=THETOKENYOUGETFROMTHECLOUDCONSOLE
-export KUBECONFIG=$(pwd)/kubeconfig-demo.yaml
+export KUBECONFIG=$(pwd)/kubeconfig-k-andy-demo.yaml
 ```
 
 The `hcloud_token` is an API Token from a [Hetzner Cloud](https://console.hetzner.cloud/projects) project.  

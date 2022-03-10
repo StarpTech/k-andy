@@ -21,5 +21,18 @@ output "k3s_token" {
 }
 
 output "network_id" {
-  value = hcloud_network.k3s.id
+  value = local.network_id
+}
+
+output "subnet_id" {
+  value = hcloud_network_subnet.k3s_nodes.id
+}
+
+output "cidr_block" {
+  value = hcloud_network_subnet.k3s_nodes.ip_range
+}
+
+output "server_locations" {
+  description = "Array of hetzner server locations we deploy to"
+  value       = var.server_locations
 }

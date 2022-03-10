@@ -13,9 +13,9 @@ resource "hcloud_server" "first_control_plane" {
   user_data = format("%s\n%s", "#cloud-config", yamlencode(
     {
       runcmd = [
-        "curl -sfL https://get.k3s.io | K3S_TOKEN='${random_password.k3s_cluster_secret.result}' INSTALL_K3S_VERSION='${var.k3s_version}' sh -s - server --cluster-init --disable local-storage --disable-cloud-controller --disable traefik --disable servicelb --kubelet-arg='cloud-provider=external'"
+        "curl -sfL https://get.k3s.io | K3S_TOKEN='${random_password.k3s_cluster_secret.result}' INSTALL_K3S_VERSION='${var.k3s_version}' ${var.control_plane_already_initialized ? local.k3s_server_join_cmd : local.k3s_server_init_cmd}"
       ]
-      packages = var.server_additional_packages
+      packages = concat(local.server_base_packages, var.server_additional_packages)
     }
   ))
 
@@ -27,8 +27,8 @@ resource "hcloud_server" "first_control_plane" {
       "kubectl taint node ${self.name} node-role.kubernetes.io/master=true:NoSchedule",
       "kubectl taint node ${self.name} CriticalAddonsOnly=true:NoExecute",
       # Install hetzner CCM
-      "kubectl -n kube-system create secret generic hcloud --from-literal=token=${var.hcloud_token} --from-literal=network=${hcloud_network.k3s.name}",
-      "kubectl apply -f -<<EOF\n${data.template_file.ccm_manifest.rendered}\nEOF",
+      "kubectl -n kube-system create secret generic hcloud --from-literal=token=${var.hcloud_token} --from-literal=network=${local.network_name}",
+      "kubectl apply -f -<<EOF\n${templatefile("${path.module}/manifests/hcloud-ccm-net.yaml", { cluster_cidr = var.cluster_cidr })}\nEOF",
       # Install hetzner CSI plugin
       "kubectl -n kube-system create secret generic hcloud-csi --from-literal=token=${var.hcloud_token}",
       "kubectl apply -f -<<EOF\n${data.http.hcloud_csi_driver_manifest.body}\nEOF",
@@ -42,10 +42,15 @@ resource "hcloud_server" "first_control_plane" {
     }
   }
 
+  // Otherwise we would be in a case where this would always be recreated because we switch the primary control plane IP
+  lifecycle {
+    ignore_changes = [user_data]
+  }
+
 }
 
 resource "hcloud_server_network" "first_control_plane" {
   subnet_id = hcloud_network_subnet.k3s_nodes.id
   server_id = hcloud_server.first_control_plane.id
-  ip        = local.first_control_plane_ip
+  ip        = local.primary_control_plane_ip
 }

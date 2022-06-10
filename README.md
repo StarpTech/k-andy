@@ -14,6 +14,13 @@ This [terraform](https://www.terraform.io/) module will install a High Availabil
 </br>
 </br>
 
+---
+
+> **Note**: Are you looking for the next generation API Developer Platform? 🔎 Have a look at: [WunderGraph](https://github.com/wundergraph/wundergraph)
+Turn your services, databases and 3rd party APIs into a secure unified API in just a few minutes. 🪄
+
+---
+
 **Hetzner Cloud integration**:
 
 - Preinstalled [CSI-driver](https://github.com/hetznercloud/csi-driver) for volume support.

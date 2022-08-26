@@ -21,6 +21,10 @@ Turn your services, databases and 3rd party APIs into a secure unified API in ju
 
 ---
 
+**What is K3s?**
+
+K3s is a lightweight certified kubernetes distribution. It's packaged as single binary and comes with solid defaults for storage and networking but we replaced [local-path-provisioner](https://github.com/rancher/local-path-provisioner) with hetzner [CSI-driver](https://github.com/hetznercloud/csi-driver) and [klipper load-balancer](https://github.com/k3s-io/klipper-lb) with hetzner [Cloud Controller Manager](https://github.com/hetznercloud/hcloud-cloud-controller-manager). The default ingress controller (traefik) has been disabled.
+
 **Hetzner Cloud integration**:
 
 - Preinstalled [CSI-driver](https://github.com/hetznercloud/csi-driver) for volume support.
@@ -40,10 +44,6 @@ All agent nodes can be labelled using `kubectl label nodes -l !node-role.kuberne
 To remove the label from all nodes you can run `kubectl label nodes --all k3s-upgrade-`.
 
 After a successful update you can also remove the upgrade controller and the plans again, setting `enable_upgrade_controller` to `false`.
-
-**What is K3s?**
-
-K3s is a lightweight certified kubernetes distribution. It's packaged as single binary and comes with solid defaults for storage and networking but we replaced [local-path-provisioner](https://github.com/rancher/local-path-provisioner) with hetzner [CSI-driver](https://github.com/hetznercloud/csi-driver) and [klipper load-balancer](https://github.com/k3s-io/klipper-lb) with hetzner [Cloud Controller Manager](https://github.com/hetznercloud/hcloud-cloud-controller-manager). The default ingress controller (traefik) has been disabled.
 
 ## Usage
 
